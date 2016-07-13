@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.DoubleStream;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
@@ -26,12 +25,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
+import desktopadmin.model.accounting.CustomerTransaction;
 import desktopadmin.model.accounting.EnumType.Payer;
 import desktopadmin.model.accounting.EnumType.PaymentMovement;
-import desktopadmin.model.accounting.CustomerTransaction;
 import desktopadmin.model.accounting.Transaction;
 import desktopadmin.model.accounting.TransactionCause;
-import desktopadmin.model.person.Supplier;
 
 public class CustomerTransactionPanel extends JpanelTemplate implements ActionListener
 {
@@ -101,6 +99,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 	{
 
 		paymentPanel = new PaymentPanel();
+		paymentPanel.setVisibleRowCount(8);
 		paymentPanel.lazyInitalize();
 		// init data
 		transactionCauses = DataUtils.transactionCauses(payer);

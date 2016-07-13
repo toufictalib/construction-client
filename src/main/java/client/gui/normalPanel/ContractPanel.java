@@ -3,14 +3,12 @@ package client.gui.normalPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -81,12 +79,13 @@ public class ContractPanel extends JpanelTemplate
 	public void initComponents( )
 	{
 		paymentPanel = new PaymentPanel();
+		paymentPanel.setVisibleRowCount(3);
 		paymentPanel.lazyInitalize();
 
 		comboProjects = new ExCombo<>();
 		fillProjects();
 
-		txtDescription = new JTextArea(5, 5);
+		txtDescription = new JTextArea(3, 5);
 
 		comboCustomers = new ExCombo<>();
 
@@ -154,7 +153,6 @@ public class ContractPanel extends JpanelTemplate
 					downPaymenttransaction.setReferenceId(comboCustomers.getValue().getId());
 
 					downPaymenttransaction.setDescritpion("Down Payment for Customer " + comboCustomers.getValue().getName() + "\n" + "because of buying a " + comboRealEstateType.getValue());
-					DoubleStream mapToDouble = downPaymenttransaction.getPayments().stream().mapToDouble(ee -> ee.getValue());
 					downPaymenttransaction.setPaymentMovement(PaymentMovement.PAYMENT);
 
 					downPaymenttransaction.setProject(comboProjects.getValue());

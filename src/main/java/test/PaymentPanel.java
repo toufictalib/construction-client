@@ -1,6 +1,5 @@
 package test;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -66,6 +65,8 @@ public class PaymentPanel extends JpanelTemplate implements ActionListener
 
 	private JButton btnDelete;
 
+	private int visibleRowCount = 5;
+
 	public PaymentPanel( )
 	{
 	}
@@ -85,7 +86,6 @@ public class PaymentPanel extends JpanelTemplate implements ActionListener
 		builder.append(ButtonBarFactory.buildRightAlignedBar(btnAdd, btnDelete), col);
 		
 		JScrollPane scrollPane = new JScrollPane(tablePayment);
-		scrollPane.setPreferredSize(new Dimension(600,250));
 		builder.append(scrollPane, col);
 
 	}
@@ -112,6 +112,7 @@ public class PaymentPanel extends JpanelTemplate implements ActionListener
 		paymentTableModel = new PaymentTableModel();
 
 		tablePayment = new JXTable();
+		tablePayment.setVisibleRowCount(visibleRowCount );
 		tablePayment.putClientProperty("terminateEditOnFocusLost", true);
 		TableUtils.registerKeyboardAction(tablePayment, new NextCellActioin(tablePayment, paymentTableModel), "Action.NextCell", KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, 0), JComponent.WHEN_FOCUSED);
 
@@ -214,5 +215,17 @@ public class PaymentPanel extends JpanelTemplate implements ActionListener
 		return transaction;
 
 	}
+
+	public int getVisibleRowCount( )
+	{
+		return visibleRowCount;
+	}
+
+	public void setVisibleRowCount(int visibleRowCount)
+	{
+		this.visibleRowCount = visibleRowCount;
+	}
+	
+	
 
 }
