@@ -28,7 +28,12 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public abstract class ExtendedCrudPanel extends JpanelTemplate implements ActionListener, CrudPanel.CrudListener {
 
-    protected CrudPanel crudPanel;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3519685938746048836L;
+
+	protected CrudPanel crudPanel;
 
     protected JButton btnSave;
     protected JButton btnCancel;
@@ -64,7 +69,12 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
         this.crudPanel = new CrudPanel()
         {
 
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 6755797471176678268L;
+
+			@Override
             protected void refresh() {
                 super.refresh(); 
                 fillCrudTable();
@@ -93,7 +103,8 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
         crudPanel.setTableDimension(tableDimension);
     }
      
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void add() {
         try {
 

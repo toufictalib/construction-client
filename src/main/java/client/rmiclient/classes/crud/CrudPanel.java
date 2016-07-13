@@ -47,7 +47,6 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
     private JButton btnRefresh;
     private JButton btnDelete;
     private JButton btnAdd;
-    private JButton btnCancel;
 
     protected CrudListener crudListener;
 
@@ -80,7 +79,7 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
         }
         
         builder.append(ButtonBarFactory.buildLeftAlignedBar(btnRefresh));
-        builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel, btnDelete, btnAdd));
+        builder.append(ButtonBarFactory.buildRightAlignedBar(btnDelete, btnAdd));
 
         builder.appendSeparator();
         builder.append(filterTableFrame,3);
@@ -98,8 +97,6 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
         btnDelete =ButtonFactory.createBtnDelete();
         btnDelete.addActionListener(this);
 
-        btnCancel = ButtonFactory.createBtnCancel();
-        btnCancel.addActionListener(this);
 
         btnRefresh = client.gui.button.ButtonFactory.createBtnRefresh();
         btnRefresh.addActionListener(this);
@@ -162,9 +159,7 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
             btnDeleteAction();
             crudListener.delete();
 
-        } else if (e.getSource() == btnCancel) {
-            crudListener.cancel();
-        }
+        } 
         else if(e.getSource() == btnRefresh)
         {
             refresh();
@@ -191,9 +186,6 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
         this.crudListener = crudListener;
     }
 
-    public void hideCancel() {
-        btnCancel.setVisible(false);
-    }
     
      public void hideAdd() {
         btnAdd.setVisible(false);
@@ -202,7 +194,6 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
      public void hideAllButtons() {
         btnAdd.setVisible(false);
         btnDelete.setVisible(false);
-        btnCancel.setVisible(false);
         btnRefresh.setVisible(false);
     }
     
