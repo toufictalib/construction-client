@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- <import resource="classpath:database.properties" /> -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${dbdriver}" />
+		<property name="url" value="${dburl_write}" />
+		<property name="username" value="${dbusername_write}" />
+		<property name="password" value="${dbpassword_write}" />
+
+	</bean>
+
+
+</beans>
