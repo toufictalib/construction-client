@@ -122,7 +122,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 		btnSave = ButtonFactory.createBtnSave();
 		btnSave.addActionListener(this);
 
-		btnClose = ButtonFactory.createBtnCancel();
+		btnClose = ButtonFactory.createBtnClose();
 		btnClose.addActionListener(this);
 		
 		
@@ -158,6 +158,10 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 		if(e.getSource()==btnSave)
 		{
 			save();
+		}
+		else if(e.getSource()==btnClose)
+		{
+			closeWindow();
 		}
 	}
 

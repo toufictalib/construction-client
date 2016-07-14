@@ -53,6 +53,9 @@ public class FlatCrudPanel extends ExtendedCrudPanel
 	{
 		// TODO Auto-generated method stub
 		super.initComponents();
+		
+		btnClose.setVisible(true);
+		
 		beanComplexElement = new BeanComplexElement();
 		crudPanel.setBeanComplexElement(beanComplexElement);
 		beanComplexElement.addObjects("block", new ArrayList<>());

@@ -57,9 +57,9 @@ public class BlockCrudPanel extends ExtendedCrudPanel
 	@Override
 	public void initComponents( )
 	{
-		// TODO Auto-generated method stub
 		super.initComponents();
 		
+		btnClose.setVisible(true);
 	}
 
 	@Override

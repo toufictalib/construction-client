@@ -37,6 +37,10 @@ public class ButtonFactory {
         return new JButton("Cancel", ImageUtils.getCancelIcon());
     }
     
+    public static JButton createBtnClose() {
+        return new JButton("Close", ImageUtils.getCloseIcon());
+    }
+    
     public static JButton createBtnReset() {
         return new JButton("Reset", ImageUtils.getResetIcon());
     }

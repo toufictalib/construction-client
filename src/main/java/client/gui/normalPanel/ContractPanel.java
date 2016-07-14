@@ -11,11 +11,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import org.jdesktop.swingx.JXDatePicker;
 
+import test.DataUtils;
 import test.PaymentPanel;
 import client.App;
 import client.gui.button.ButtonFactory;
@@ -55,10 +55,10 @@ public class ContractPanel extends JpanelTemplate
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Contract");
-		JPanel panel = new JPanel();
+		/*JPanel panel = new JPanel();
 		panel.add(comboProjects);
 		panel.add(btnStart);
-		builder.append("projects", panel);
+		builder.append("projects", panel);*/
 
 		builder.append("Description", txtDescription);
 		builder.append("Customers", comboCustomers);
@@ -71,7 +71,7 @@ public class ContractPanel extends JpanelTemplate
 		builder.append(paymentPanel, builder.getColumnCount());
 
 		builder.appendSeparator();
-		builder.append(ButtonBarFactory.buildRightAlignedBar(btnSave), builder.getColumnCount());
+		builder.append(ButtonBarFactory.buildRightAlignedBar(btnSave,btnClose), builder.getColumnCount());
 
 	}
 
@@ -79,7 +79,6 @@ public class ContractPanel extends JpanelTemplate
 	public void initComponents( )
 	{
 		paymentPanel = new PaymentPanel();
-		paymentPanel.setVisibleRowCount(3);
 		paymentPanel.lazyInitalize();
 
 		comboProjects = new ExCombo<>();
@@ -108,7 +107,68 @@ public class ContractPanel extends JpanelTemplate
 
 		btnSave = ButtonFactory.createBtnSave();
 
-		btnSave.addActionListener(e -> {
+		btnSave.addActionListener(createBtnSaveActionListener());
+
+		btnStart = ButtonFactory.createBtnSearch();
+		btnStart.addActionListener(createBtnStartActionListener());
+		
+		btnClose = ButtonFactory.createBtnClose();
+		btnClose.addActionListener(e->{
+			closeWindow();
+		});
+
+		realEstateMap = new HashMap<>();
+
+		
+		fillValues();
+	}
+
+	
+	private void fillProjects( )
+	{
+		ProgressBar.execute(new ProgressBarListener<List<Project>>()
+		{
+
+			@Override
+			public List<Project> onBackground( ) throws Exception
+			{
+				return App.getCrudService().list(Project.class);
+			}
+
+			@Override
+			public void onDone(List<Project> response)
+			{
+
+				comboProjects.setValues(true, response);
+			}
+		}, this);
+	}
+
+	private void fillRealEstateCombo( )
+	{
+		Block selectedBlock = comboBlocks.getValue();
+		if (selectedBlock != null)
+		{
+			RealEstateType realEstateType = comboRealEstateType.getValue();
+			if (realEstateType != null)
+			{
+				Set<RealEstate> estates = realEstateMap.get(selectedBlock.getId());
+				if (estates == null)
+				{
+					estates = new HashSet<>();
+				}
+
+				estates = estates.stream().filter(e -> realEstateType.toDiscriminator().equals(e.getDiscriminatorValue())).collect(Collectors.toSet());
+
+				comboRealEstate.setValues(estates);
+			}
+		}
+
+	}
+	
+	private ActionListener createBtnSaveActionListener( )
+	{
+		return e -> {
 			ProgressBar.execute(new ProgressBarListener<Void>()
 			{
 
@@ -176,96 +236,55 @@ public class ContractPanel extends JpanelTemplate
 				}
 
 			}, this);
-		});
-
-		btnStart = ButtonFactory.createBtnSearch();
-		btnStart.addActionListener(createBtnStartActionListener());
-
-		realEstateMap = new HashMap<>();
-
+		};
 	}
 
 	private ActionListener createBtnStartActionListener( )
 	{
 		return e -> {
-			if (comboProjects.getValue() == null)
-			{
-				MessageUtils.showWarningMessage(ContractPanel.this, "Please select a project");
-				return;
-			}
-
-			// init real estate map on select project
-			realEstateMap.clear();
-
-			ProgressBar.execute(new ProgressBarListener<ContractBean>()
-			{
-
-				@Override
-				public ContractBean onBackground( ) throws Exception
-				{
-					return App.getCrudService().getContractBean(comboProjects.getValue().getId());
-				}
-
-				@Override
-				public void onDone(ContractBean response)
-				{
-
-					comboCustomers.setValues(false, response.getCustomers());
-					comboBlocks.setValues(false, response.getBlocks());
-
-					for (Block block : response.getBlocks())
-					{
-						realEstateMap.put(block.getId(), new HashSet<>(block.getFlats()));
-					}
-
-					fillRealEstateCombo();
-				}
-
-			}, this);
+			fillValues();
 		};
 	}
 
-	private void fillProjects( )
+	private void fillValues( )
 	{
-		ProgressBar.execute(new ProgressBarListener<List<Project>>()
+		if (DataUtils.getSelectedProject() == null)
+		{
+			MessageUtils.showWarningMessage(ContractPanel.this, "Please select a project");
+			return;
+		}
+
+		// init real estate map on select project
+		realEstateMap.clear();
+
+		ProgressBar.execute(new ProgressBarListener<ContractBean>()
 		{
 
 			@Override
-			public List<Project> onBackground( ) throws Exception
+			public ContractBean onBackground( ) throws Exception
 			{
-				return App.getCrudService().list(Project.class);
+				return App.getCrudService().getContractBean(DataUtils.getSelectedProject().getId());
 			}
 
 			@Override
-			public void onDone(List<Project> response)
+			public void onDone(ContractBean response)
 			{
 
-				comboProjects.setValues(true, response);
+				comboCustomers.setValues(false, response.getCustomers());
+				comboBlocks.setValues(false, response.getBlocks());
+
+				for (Block block : response.getBlocks())
+				{
+					realEstateMap.put(block.getId(), new HashSet<>(block.getFlats()));
+				}
+
+				fillRealEstateCombo();
 			}
+
 		}, this);
 	}
 
-	private void fillRealEstateCombo( )
-	{
-		Block selectedBlock = comboBlocks.getValue();
-		if (selectedBlock != null)
-		{
-			RealEstateType realEstateType = comboRealEstateType.getValue();
-			if (realEstateType != null)
-			{
-				Set<RealEstate> estates = realEstateMap.get(selectedBlock.getId());
-				if (estates == null)
-				{
-					estates = new HashSet<>();
-				}
-
-				estates = estates.stream().filter(e -> realEstateType.toDiscriminator().equals(e.getDiscriminatorValue())).collect(Collectors.toSet());
-
-				comboRealEstate.setValues(estates);
-			}
-		}
-
-	}
+	
 
 	/**
 	 * 
@@ -291,6 +310,8 @@ public class ContractPanel extends JpanelTemplate
 	private PaymentPanel paymentPanel;
 
 	private JButton btnSave;
+
+	private JButton btnClose;
 
 	private JButton btnStart;
 

@@ -5,12 +5,17 @@
  */
 package client.utils;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -40,5 +45,10 @@ public class ComponentUtils {
         int width = (int) (screenSize.width*widthPercentage/100);
         int height = (int) (screenSize.height*heightPercentage/100);
         return new Dimension(width, height);
+    }
+    
+    public static void addTitleBorder(JComponent component,String title)
+    {
+    	component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), title));;
     }
 }

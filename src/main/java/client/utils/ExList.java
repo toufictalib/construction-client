@@ -8,9 +8,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JList;
 
+@SuppressWarnings("rawtypes")
 public class ExList<T> extends JList {
 	private static final long serialVersionUID = -8406426154902695060L;
 	public static final String NONE = "None";
@@ -20,6 +20,7 @@ public class ExList<T> extends JList {
         public ExList()
         {
             this(new ArrayList<T>());
+            setValueIsAdjusting(true);
         }
         
 	public ExList(T[] items) {
@@ -39,7 +40,11 @@ public class ExList<T> extends JList {
 		init(withNone, items);
 	}
 
+	@SuppressWarnings({
+	"unchecked"
+	})
 	private void init(boolean withNone, Collection<T> items) {
+		this.withNone = withNone;
 		List<T> list = new ArrayList<T>(items);
 		
                 try
@@ -74,11 +79,20 @@ public class ExList<T> extends JList {
 
 	}
         
-        public void setValues(T[] items)
+		public void setValues(T[] items)
         {
-            DefaultComboBoxModel boxModel = new DefaultComboBoxModel(items);
-		if (withNone)
-			boxModel.insertElementAt(NONE, 0);
-		setModel(boxModel);
+          setValues(Arrays.asList(items));
+        }
+        
+        @SuppressWarnings({
+		"unchecked"
+		})
+
+        public void setValues(List<T> items)
+        {
+        	  DefaultComboBoxModel boxModel = new DefaultComboBoxModel(items.toArray());
+      		if (withNone)
+      			boxModel.insertElementAt(NONE, 0);
+      		setModel(boxModel);
         }
 }

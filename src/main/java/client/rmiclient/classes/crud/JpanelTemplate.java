@@ -7,6 +7,7 @@ package client.rmiclient.classes.crud;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -14,6 +15,7 @@ import javax.swing.SwingUtilities;
  *
  * @author User
  */
+@SuppressWarnings("serial")
 public abstract class JpanelTemplate extends JPanel {
 
     public boolean alreadyInit = false;
@@ -52,4 +54,13 @@ public abstract class JpanelTemplate extends JPanel {
     {
         return SwingUtilities.getWindowAncestor(this);
     }
+    
+	public void closeWindow( )
+	{
+		Window window = getOwner();
+		if (window != null)
+		{
+			window.dispose();
+		}
+	}
 }

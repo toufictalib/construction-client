@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -74,10 +75,12 @@ public class MainFrame extends JRibbonFrame
 				frame.setVisible(true);
 
 				JRibbonBand users = new JRibbonBand("Users", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
+				JRibbonBand main = new JRibbonBand("Main", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
 				JRibbonBand transactions = new JRibbonBand("Transactions", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
 				JRibbonBand projects = new JRibbonBand("Projects", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
 
 				UserMenu.drawUserMenu(myPanel, users);
+				UserMenu.drawMainMenu(myPanel, main);
 				UserMenu.drawTransactions(myPanel, transactions);
 				UserMenu.drawProjects(myPanel, projects);
 
@@ -95,27 +98,26 @@ public class MainFrame extends JRibbonFrame
 				bandResizePolicies.add(new CoreRibbonResizePolicies.Mid2Low(transactions.getControlPanel()));
 				transactions.setResizePolicies(bandResizePolicies);
 				
-				projects.setResizePolicies((List) Arrays.asList(
-						new CoreRibbonResizePolicies.None(projects.getControlPanel()),
-						new CoreRibbonResizePolicies.Mirror(projects.getControlPanel()),
-						new CoreRibbonResizePolicies.Mid2Low(projects.getControlPanel()),
-						new IconRibbonBandResizePolicy(projects.getControlPanel())
-						));
+				projects.setResizePolicies(bandResizePolicies);
 				
+				main.setResizePolicies(bandResizePolicies);
 
+				RibbonTask task3 = new RibbonTask("Projects", projects);
 				RibbonTask task1 = new RibbonTask("Users", users);
 				RibbonTask task2 = new RibbonTask("Transactions", transactions);
-				RibbonTask task3 = new RibbonTask("Projects", projects);
+				RibbonTask mainTask = new RibbonTask("Main", main);
 
-				frame.getRibbon().addTask(task1);
-				frame.getRibbon().addTask(task2);
+				frame.getRibbon().addTask(mainTask);
 				frame.getRibbon().addTask(task3);
+				frame.getRibbon().addTask(task2);
+				frame.getRibbon().addTask(task1);
 
 				JScrollPane scrollPane = new JScrollPane(myPanel);
 				scrollPane.setPreferredSize(new Dimension(750, 400));
 				frame.add(myPanel);
 
 				frame.getRibbon().setApplicationMenu(new RibbonApplicationMenu());
+				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 				frame.pack();
 			}
 		});

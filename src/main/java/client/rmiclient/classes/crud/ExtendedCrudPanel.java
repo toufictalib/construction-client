@@ -37,6 +37,7 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
 
     protected JButton btnSave;
     protected JButton btnCancel;
+    protected JButton btnClose;
     
     protected String title;
 
@@ -60,7 +61,14 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
 
         builder.appendSeparator();
 
-        builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel, btnSave));
+        if(btnClose.isVisible())
+        {
+        builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel, btnSave,btnClose));
+        }
+        else
+        {
+        	builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel, btnSave));
+        }
 
     }
 
@@ -92,6 +100,10 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
         btnCancel = ButtonFactory.createBtnCancel();
         btnCancel.addActionListener(this);
         btnCancel.setVisible(false);
+
+        btnClose= ButtonFactory.createBtnClose();
+        btnClose.addActionListener(this);
+        btnClose.setVisible(false);
 
         fillCrudTable();
 
@@ -149,6 +161,10 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
             btnSaveAction();
         } else if (e.getSource() == btnCancel) {
             resetModifications();
+        }
+        else if(e.getSource()==btnClose)
+        {
+        	closeWindow();
         }
     }
     

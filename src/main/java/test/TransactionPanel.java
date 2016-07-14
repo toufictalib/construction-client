@@ -27,6 +27,7 @@ import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.CustomerTransaction;
 import desktopadmin.model.accounting.EnumType.Payer;
 import desktopadmin.model.accounting.EnumType.PaymentMovement;
+import desktopadmin.model.accounting.SupplierTransaction;
 import desktopadmin.model.accounting.Transaction;
 import desktopadmin.model.accounting.TransactionCause;
 
@@ -127,7 +128,7 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 		btnSave = ButtonFactory.createBtnSave();
 		btnSave.addActionListener(this);
 
-		btnClose = ButtonFactory.createBtnCancel();
+		btnClose = ButtonFactory.createBtnClose();
 		btnClose.addActionListener(this);
 		
 		cbCompany = new JCheckBox("Is Company");
@@ -174,6 +175,10 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 		{
 			save();
 		}
+		else if(e.getSource()==btnClose)
+		{
+			closeWindow();
+		}
 	}
 
 	private void save( )
@@ -185,7 +190,7 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 			public Void onBackground( ) throws Exception
 			{
 
-				Transaction transaction = paymentPanel.getTransaction(new CustomerTransaction());
+				Transaction transaction = paymentPanel.getTransaction(new SupplierTransaction());
 
 				TransactionCause transactionCause = new TransactionCause();
 				transactionCause.setId(Long.valueOf(1 + ""));

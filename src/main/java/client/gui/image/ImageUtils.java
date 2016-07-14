@@ -33,6 +33,10 @@ public class ImageUtils {
         return ImageHelperCustom.get().getImageIcon("reset.png");
     }
     
+    public static ImageIcon getCloseIcon() {
+        return ImageHelperCustom.get().getImageIcon("close.png");
+    }
+    
     public static ImageIcon getAddIcon() {
         return ImageHelperCustom.get().getImageIcon("add.png");
     }

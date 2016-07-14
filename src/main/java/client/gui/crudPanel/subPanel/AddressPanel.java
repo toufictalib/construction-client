@@ -73,5 +73,11 @@ public class AddressPanel extends JpanelTemplate
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void clear()
+	{
+		
+	}
+	
 
 }

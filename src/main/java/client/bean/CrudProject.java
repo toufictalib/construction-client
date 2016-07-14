@@ -136,6 +136,11 @@ public class CrudProject extends BaseEntity
 		project.setStartDate(startDate);
 		project.setDueDate(dueDate);
 		
+		if(address!=null)
+		{
+		address.setProject(project);
+		}
+		
 		return project;
 	}
 	

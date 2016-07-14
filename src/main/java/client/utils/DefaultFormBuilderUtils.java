@@ -26,7 +26,17 @@ public class DefaultFormBuilderUtils {
 		}
 		
 		FormLayout formLayout = new FormLayout(endCodedColumnsSpecs);
-		DefaultFormBuilder builder = new DefaultFormBuilder(formLayout, panel);
+		DefaultFormBuilder builder = null;
+		if (panel != null)
+		{
+			builder = new DefaultFormBuilder(formLayout, panel);
+		}
+		else
+		{
+			builder = new DefaultFormBuilder(formLayout);
+		}
+		
+		builder.setDebugToolTipsEnabled(true);
 		builder.setDefaultDialogBorder();
 		builder.setLeftToRight(!right);
 		return builder;

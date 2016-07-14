@@ -1,13 +1,10 @@
 package test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import client.bean.CrudProject;
-import client.utils.ProgressBar;
-import sun.awt.CausedFocusEvent.Cause;
 import desktopadmin.model.accounting.Bank;
 import desktopadmin.model.accounting.EnumType.Payer;
 import desktopadmin.model.accounting.TransactionCause;
@@ -22,7 +19,7 @@ public class DataUtils
 	
 	private static List<TransactionCause> transactionCauses;
 	
-	private static Project selectedProject = new Project(Long.valueOf(1+""));
+	private static Project selectedProject;
 	
 	
 
