@@ -2,34 +2,54 @@ package client.gui.mainPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+
+
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+
+
 
 import test.DataUtils;
 import test.PaymentPanel;
 import client.App;
 import client.gui.button.ButtonFactory;
 import client.rmiclient.classes.crud.JpanelTemplate;
+import client.utils.ComponentUtils;
 import client.utils.ExCombo;
 import client.utils.MessageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
 
+
+
+
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
+
+
+
 import desktopadmin.action.bean.ContractBean;
+import desktopadmin.action.bean.ContractEntry;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.CustomerTransaction;
 import desktopadmin.model.accounting.EnumType.Payer;
 import desktopadmin.model.accounting.EnumType.PaymentMovement;
 import desktopadmin.model.accounting.Transaction;
 import desktopadmin.model.accounting.TransactionCause;
+import desktopadmin.model.sold.Contract;
 
 public class CustomerTransactionPanel extends JpanelTemplate implements ActionListener
 {
@@ -47,6 +67,8 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 	private ExCombo<PaymentMovement> comboPaymentMovement;
 
 	private ExCombo<Entry> comboCustomer;
+	
+	private ExCombo<ContractEntry> comboContract;
 
 	private ExCombo<TransactionCause> comboTransactionCause;
 
@@ -64,6 +86,8 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 	// holders
 	private List<TransactionCause> transactionCauses;
 
+	private Map<Long, List<ContractEntry>> contractEntryByCustomer;
+	
 	private Payer payer;
 
 	public CustomerTransactionPanel()
@@ -82,6 +106,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 		builder.appendSeparator("Payment");
 
 		builder.append("Customer", comboCustomer);
+		builder.append("Contract", comboContract);
 		builder.append("Description", txtDescription);
 		builder.append("Movement", comboPaymentMovement);
 		builder.append("Transaction Cause", comboTransactionCause);
@@ -112,7 +137,26 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 		comboPaymentMovement = new ExCombo<PaymentMovement>(PaymentMovement.values());
 
 		comboCustomer = new ExCombo<>();
+		comboCustomer.addItemListener(e->{
+			if(e.getStateChange()==ItemEvent.SELECTED)
+			{
+				if (comboCustomer.getValue() != null)
+				{
+					List<ContractEntry> list = contractEntryByCustomer.get(comboCustomer.getValue().getId());
+					if (list != null)
+					{
+						comboContract.setValues(list);
+					}
+				}
+				else
+				{
+					comboContract.setValues(new ArrayList<>());
+				}
+			}
+		});
 
+		comboContract = new ExCombo<>();
+		
 		comboTransactionCause = new ExCombo<TransactionCause>(transactionCauses);
 
 
@@ -144,7 +188,11 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 			@Override
 			public void onDone(ContractBean response)
 			{
+				contractEntryByCustomer = response.getContracts().stream().collect(Collectors.groupingBy(e->e.getCustomerId()));
+				
 				comboCustomer.setValues(response.getCustomers());
+				ComponentUtils.fireCombobBox(comboCustomer);
+				
 				
 			}
 		}, this);
@@ -174,7 +222,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 			public Void onBackground( ) throws Exception
 			{
 				
-				Transaction transaction = paymentPanel.getTransaction(new CustomerTransaction());
+				CustomerTransaction transaction = (CustomerTransaction) paymentPanel.getTransaction(new CustomerTransaction());
 				
 				TransactionCause transactionCause = new TransactionCause();
 				transactionCause.setId(Long.valueOf(1+""));
@@ -185,10 +233,14 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 				
 				transaction.setDescritpion(txtDescription.getText().trim());
 				
+				
+				
 				//DoubleStream mapToDouble = transaction.getPayments().stream().mapToDouble(ee->ee.getValue());
 				transaction.setPaymentMovement(PaymentMovement.PAYMENT);
 				
 				transaction.setProject(DataUtils.getSelectedProject());
+				
+				transaction.setContract(new Contract(comboContract.getValue().getId()));
 				
 				App.getCrudService().saveOrUpdate(Arrays.asList(transaction));
 				
