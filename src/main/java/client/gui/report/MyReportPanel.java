@@ -5,11 +5,17 @@
  */
 package client.gui.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import client.App;
 import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.ExtendedCrudPanel;
 import client.rmiclient.classes.crud.ModelHolder;
+import client.rmiclient.classes.crud.tableReflection.Column;
+import client.utils.ProgressBar;
+import client.utils.ProgressBar.ProgressBarListener;
+import desktopadmin.action.bean.ReportTableModel;
 
 /**
  *
@@ -40,16 +46,22 @@ public class MyReportPanel extends ExtendedCrudPanel {
     @Override
     protected void fillCrudTable() {
 
-/*        Petition.getClients().setListener(new BaseListener<Clients>(getOwner()) {
+    	ProgressBar.execute(new ProgressBarListener<ReportTableModel>()
+		{
 
-            @Override
-            protected void handleSuccess(Clients response) {
-                super.handleSuccess(response);
-                setData(response.getClients());
-            }
+			@Override
+			public ReportTableModel onBackground( ) throws Exception
+			{
+				return App.getCrudService().getCustomerTransaction(1l, 1l);
+			}
 
-        }).buildAndRun();
-*/
+			@Override
+			public void onDone(ReportTableModel response)
+			{
+				setData(response);
+				
+			}
+		},this);
     }
 
     public void setData(List data) {
@@ -57,11 +69,26 @@ public class MyReportPanel extends ExtendedCrudPanel {
         crudPanel.fillValues(new ModelHolder(getData(), data.isEmpty() ? Object.class : data.get(0).getClass()));
     }
 
-    public void setData(BeanTableModel beanTableModel) {
-        this.data = beanTableModel.getRows();
-        crudPanel.fillValues(beanTableModel);
+    public void setData(ReportTableModel reportTableModel) {
+        crudPanel.fillValues(fromReportTableModel(reportTableModel));
     }
 
+    @SuppressWarnings("rawtypes")
+	public static BeanTableModel fromReportTableModel(ReportTableModel reportTableModel)
+    {
+    	int counter = 0;
+    	
+    	List<Column> columns = new ArrayList<>();
+    	for(String col:reportTableModel.cols)
+    	{
+    		Column column = new Column(col);
+    		column.setType(reportTableModel.clazzes.get(counter++));
+    		columns.add(column);
+    	}
+    	
+    	return new BeanTableModel<>(columns, reportTableModel.rows);
+    }
+    
     public List getData() {
         if (data != null) {
             return data;

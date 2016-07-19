@@ -17,6 +17,7 @@ import client.gui.crudPanel.BlockCrudPanel;
 import client.gui.crudPanel.FlatCrudPanel;
 import client.gui.mainPanels.ProjectChooserPanel.ProjectButtonsActionListener;
 import client.gui.normalPanel.ContractPanel;
+import client.gui.report.MyReportPanel;
 import client.gui.window.WindowUtils;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.utils.ComponentUtils;
@@ -186,6 +187,32 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		return builder.getPanel();
 
 	}
+	
+	private JPanel getReportDetails( )
+	{
+
+		// init
+		JButton btnShowCustomerTransaction = new JButton("Show Customer Transaction");
+
+		ActionListener actionListener = e -> {
+			if (e.getSource() == btnShowCustomerTransaction)
+			{
+
+				open(new MyReportPanel(), "Report");
+			}
+		};
+
+		btnShowCustomerTransaction.addActionListener(actionListener);
+
+		// initl layout
+		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
+		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Project Details"));
+
+		builder.append(btnShowCustomerTransaction);
+
+		return builder.getPanel();
+
+	}
 
 	/**
 	 * 
@@ -212,6 +239,7 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 			//builder.append(lblSelectedProject);
 			builder.append(getProjectDetailsPanel());
 			builder.append(getFinancePanel());
+			builder.append(getReportDetails());
 
 			rightPanel.add(builder.getPanel());
 			rightPanel.revalidate();

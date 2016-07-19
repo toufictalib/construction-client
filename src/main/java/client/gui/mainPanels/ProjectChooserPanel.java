@@ -2,6 +2,7 @@ package client.gui.mainPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -82,6 +83,15 @@ public class ProjectChooserPanel extends JpanelTemplate implements ActionListene
 		if(e.getSource()==btnApply)
 		{
 			projectButtonsActionListener.btnApplyAction(listProjects.getValue());
+			try
+			{
+				App.getCrudService().getCustomerTransaction(1l, 1l);
+			}
+			catch (RemoteException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}
@@ -110,4 +120,5 @@ public class ProjectChooserPanel extends JpanelTemplate implements ActionListene
 	{
 		public void btnApplyAction(Project project);
 	}
+
 }
