@@ -4,16 +4,14 @@
 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-	<import resource="classpath:spring/config/Hibernate.xml" />
 	<!-- General -->
 	<bean
 		class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
 
-	<!-- Database Configuration -->
-	<import resource="classpath:spring/config/DataSource.xml" />
-	<import resource="classpath:spring/config/Hibernate.xml" />
 
 	<!-- Beans Declaration -->
 	<import resource="classpath:beans/dao.xml" />
+	
+	
 
 </beans>

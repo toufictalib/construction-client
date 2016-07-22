@@ -50,7 +50,7 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class FilterTableFrame extends JpanelTemplate implements Acceptable {
 
-    private JTable table;
+    protected JTable table;
     JTextField filterText;
 
     private ModelNewPanel modelNewPanel;

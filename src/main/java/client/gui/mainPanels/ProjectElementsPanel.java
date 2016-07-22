@@ -17,7 +17,9 @@ import client.gui.crudPanel.BlockCrudPanel;
 import client.gui.crudPanel.FlatCrudPanel;
 import client.gui.mainPanels.ProjectChooserPanel.ProjectButtonsActionListener;
 import client.gui.normalPanel.ContractPanel;
-import client.gui.report.MyReportPanel;
+import client.gui.report.ContractReportPanel;
+import client.gui.report.CustomerTransactionReportPanel;
+import client.gui.report.SupplierTransactionReportPanel;
 import client.gui.window.WindowUtils;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.utils.ComponentUtils;
@@ -193,22 +195,47 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 
 		// init
 		JButton btnShowCustomerTransaction = new JButton("Show Customer Transaction");
+		JButton btnShowSupplierTransaction = new JButton("Show Supplier Transaction");
+		JButton btnShowContract = new JButton("Show Contract Information");
+		JButton btnShowIncomeAndExpenses = new JButton("Show Income & Expenses");
 
 		ActionListener actionListener = e -> {
 			if (e.getSource() == btnShowCustomerTransaction)
 			{
 
-				open(new MyReportPanel(), "Report");
+				open(new CustomerTransactionReportPanel(), "Report");
+			}
+			
+			else if(e.getSource()==btnShowSupplierTransaction)
+			{
+				open(new SupplierTransactionReportPanel(), "Report");
+			}
+			else if(e.getSource()==btnShowContract)
+			{
+				ContractReportPanel contractReportPanel = new ContractReportPanel();
+				contractReportPanel.lazyInitalize();
+				contractReportPanel.showFrame(getOwner());
+				//open(new ContractReportPanel(), "Report");
+			}
+			else if(e.getSource()==btnShowIncomeAndExpenses)
+			{
+				
 			}
 		};
 
 		btnShowCustomerTransaction.addActionListener(actionListener);
+		btnShowSupplierTransaction.addActionListener(actionListener);
+		btnShowContract.addActionListener(actionListener);
+		btnShowIncomeAndExpenses.addActionListener(actionListener);
 
 		// initl layout
 		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
-		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Project Details"));
+		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Reports"));
 
 		builder.append(btnShowCustomerTransaction);
+		builder.append(btnShowSupplierTransaction);
+		builder.append(btnShowContract);
+		builder.append(btnShowIncomeAndExpenses);
 
 		return builder.getPanel();
 

@@ -8,4 +8,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 <property name="serviceUrl" value="rmi://192.168.2.135:25487/CrudServiceName"></property>  
 <property name="serviceInterface" value="desktopadmin.action.Crud"></property>  
 </bean>  
+
+<import resource="classpath:general/BeanLocations.xml" />
 </beans>  

@@ -52,6 +52,11 @@ public class DataUtils
 	{
 		return selectedProject;
 	}
+	
+	public static Long getSelectedProjectId()
+	{
+		return selectedProject.getId();
+	}
 
 	public static void setSelectedProject(Project selectedProject)
 	{
