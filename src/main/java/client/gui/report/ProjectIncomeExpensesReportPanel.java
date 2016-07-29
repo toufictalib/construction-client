@@ -6,36 +6,33 @@
 package client.gui.report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.table.TableColumnModel;
 
 import test.DataUtils;
 import client.App;
-import client.gui.button.ButtonFactory;
 import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
 import client.rmiclient.classes.crud.tableReflection.Column;
-import client.utils.ExCombo;
-import client.utils.MessageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
+import client.utils.table.NumberRenderer;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
-import desktopadmin.action.bean.ContractBean;
-import desktopadmin.action.bean.Entry;
 import desktopadmin.action.bean.ReportTableModel;
+import desktopadmin.action.bean.ReportTableModel.ExtraRowIndex;
+import desktopadmin.model.accounting.EnumType.ExtraRowType;
 
 /**
  *
  * @author User
  */
-public class SupplierTransactionReportPanel extends JpanelTemplate
+public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 {
 
 	
@@ -43,18 +40,16 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 
 	private List data;
 
-	private ExCombo<Entry> comboCustomer;
 
 	
-	private JButton btnSearch;
 	
 
-	public SupplierTransactionReportPanel(String title)
+	public ProjectIncomeExpensesReportPanel(String title)
 	{
 		super();
 	}
 
-	public SupplierTransactionReportPanel( )
+	public ProjectIncomeExpensesReportPanel( )
 	{
 		this("Report");
 	}
@@ -66,7 +61,6 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
-		builder.append(getController());
 		builder.append(filterTableFrame);
 
 	}
@@ -76,75 +70,13 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 	{
 		filterTableFrame = new ReportFilterTableFrame();
 		
-		comboCustomer = new ExCombo<>();
 		
-		btnSearch = ButtonFactory.createBtnSearch();
-		btnSearch.addActionListener(e->{
-			
-			if (validateSelection())
-			{
-				fillCrudTable();
-			}
-		});
 		
-		fillData();
-
+		fillCrudTable();
 	}
 
-	private boolean validateSelection( )
-	{
-		String message = "";
-		if(comboCustomer.getValue()==null)
-		{
-			message+="Please Select Customer \\n";
-		}
-		
-		
-		if(!message.isEmpty()){
-			MessageUtils.showWarningMessage(this, message);
-			return false;
-		}
-		
-		return true;
-		
-	}
 
-	private void fillData( )
-	{
-		ProgressBar.execute(new ProgressBarListener<ContractBean>()
-		{
 
-			
-
-			@Override
-			public ContractBean onBackground( ) throws Exception
-			{
-				return App.getCrudService().getSupplierContractBean(DataUtils.getSelectedProject().getId());
-			}
-
-			@Override
-			public void onDone(ContractBean response)
-			{
-				List<Entry> entries = new ArrayList<>();
-				entries.addAll(response.getCompanies());
-				entries.addAll(response.getSuppliers());
-				
-				comboCustomer.setValues(entries);
-			}
-		}, this);
-		
-	}
-
-	private JPanel getController( )
-	{
-		JPanel panel = new JPanel();
-		panel.add(new JLabel("Suppliers"));
-		panel.add(comboCustomer);
-		panel.add(btnSearch);
-
-		return panel;
-
-	}
 
 	protected void fillCrudTable( )
 	{
@@ -155,7 +87,7 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 			@Override
 			public ReportTableModel onBackground( ) throws Exception
 			{
-				return App.getCrudService().getSupplierTransaction(comboCustomer.getValue().getId(), DataUtils.getSelectedProjectId());
+				return App.getCrudService().getProjectExpensesIncome(DataUtils.getSelectedProjectId());
 			}
 
 			@Override
@@ -174,7 +106,13 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 
 	public void setData(ReportTableModel reportTableModel)
 	{
+		reportTableModel.addExtrass(Arrays.asList(new ExtraRowIndex(5,ExtraRowType.SUM),new ExtraRowIndex(6,ExtraRowType.SUM)));
+		
 		filterTableFrame.fillValues(fromReportTableModel(reportTableModel));
+		
+		TableColumnModel m = filterTableFrame.getTable().getColumnModel();
+		m.getColumn(5).setCellRenderer(NumberRenderer.getCurrencyRenderer());
+		m.getColumn(6).setCellRenderer(NumberRenderer.getCurrencyRenderer());
 	}
 
 	@SuppressWarnings("rawtypes")

@@ -72,7 +72,7 @@ public class UserMenu
 		});
 	}
 	
-	public static void drawProjects(JPanel myPanel, JRibbonBand band1)
+	public static JCommandButton drawProjects(JPanel myPanel, JRibbonBand band1)
 	{
 		JCommandButton btnProject = new JCommandButton("Project", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
 		JCommandButton btnBlock = new JCommandButton("Block", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
@@ -95,6 +95,7 @@ public class UserMenu
 			buildPanel(myPanel,new FlatCrudPanel());
 		});
 		
+		return btnProject;
 	}
 	
 

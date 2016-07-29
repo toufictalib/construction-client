@@ -19,6 +19,7 @@ import client.gui.mainPanels.ProjectChooserPanel.ProjectButtonsActionListener;
 import client.gui.normalPanel.ContractPanel;
 import client.gui.report.ContractReportPanel;
 import client.gui.report.CustomerTransactionReportPanel;
+import client.gui.report.ProjectIncomeExpensesReportPanel;
 import client.gui.report.SupplierTransactionReportPanel;
 import client.gui.window.WindowUtils;
 import client.rmiclient.classes.crud.JpanelTemplate;
@@ -219,7 +220,8 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 			}
 			else if(e.getSource()==btnShowIncomeAndExpenses)
 			{
-				
+				ProjectIncomeExpensesReportPanel contractReportPanel = new ProjectIncomeExpensesReportPanel();
+				open(contractReportPanel,"Report");
 			}
 		};
 

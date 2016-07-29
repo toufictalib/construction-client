@@ -21,6 +21,8 @@ public class DataUtils
 	
 	private static Project selectedProject;
 	
+	public final static int MAX_ROWS = 1000;
+	
 	
 
 	public static List<Check> getChecks(Bank bank)
