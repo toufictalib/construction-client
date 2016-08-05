@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +28,12 @@ import org.pushingpixels.flamingo.api.ribbon.resize.IconRibbonBandResizePolicy;
 import org.pushingpixels.flamingo.api.ribbon.resize.RibbonBandResizePolicy;
 
 import client.App;
+import client.gui.image.ImageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
 import desktopadmin.model.accounting.TransactionCause;
 import desktopadmin.model.accounting.payment.Check;
+import desktopadmin.model.stock.Product;
 
 /**
  * Main Frame to demonstrate ribbon use.
@@ -46,10 +49,18 @@ public class MainFrame extends JRibbonFrame
 	/** Serial version unique id. */
 	private static final long serialVersionUID = 1L;
 
+	private static URL getUrl(String path) {
+        URL url = MainFrame.class.getResource(path);
+        if (url == null) {
+            url = MainFrame.class.getClassLoader().getResource(path);
+        }
+        return url;
+    }
+	
 	public static ResizableIcon getResizableIconFromResource(String resource)
 	{
 
-		return ImageWrapperResizableIcon.getIcon(MainFrame.class.getClassLoader().getResource(resource), new Dimension(48, 48));
+		return ImageWrapperResizableIcon.getIcon(getUrl("images/menus/"+resource), new Dimension(48, 48));
 	}
 
 	/**
@@ -76,8 +87,9 @@ public class MainFrame extends JRibbonFrame
 
 				JRibbonBand users = new JRibbonBand("Users", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
 				JRibbonBand main = new JRibbonBand("Main", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
-				JRibbonBand transactions = new JRibbonBand("Transactions", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
-				JRibbonBand projects = new JRibbonBand("Projects", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
+				JRibbonBand transactions = new JRibbonBand("Misc", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
+				JRibbonBand projects = new JRibbonBand("Projects", getResizableIconFromResource("project.png"));
+				JRibbonBand stocks = new JRibbonBand("Stock", getResizableIconFromResource("48px-Crystal_Clear_app_Staroffice.png"));
 
 				UserMenu.drawUserMenu(myPanel, users);
 				UserMenu.drawMainMenu(myPanel, main);
@@ -105,7 +117,7 @@ public class MainFrame extends JRibbonFrame
 
 				RibbonTask task3 = new RibbonTask("Projects", projects);
 				RibbonTask task1 = new RibbonTask("Users", users);
-				RibbonTask task2 = new RibbonTask("Transactions", transactions);
+				RibbonTask task2 = new RibbonTask("Misc", transactions);
 				//RibbonTask mainTask = new RibbonTask("Main", main);
 
 				
@@ -145,8 +157,9 @@ public class MainFrame extends JRibbonFrame
 				frame.getRibbon().addTask(task3);
 				frame.getRibbon().addTask(task2);
 				frame.getRibbon().addTask(task1);
-				frame.getRibbon().setApplicationMenu(ribbonApplicationMenu);
+				//frame.getRibbon().setApplicationMenu(ribbonApplicationMenu);
 				frame.pack();
+				frame.setIconImage(ImageUtils.getSoftwareIcon().getImage());
 				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -193,5 +206,22 @@ public class MainFrame extends JRibbonFrame
 
 			}
 		}, this);
+		
+		ProgressBar.execute(new ProgressBarListener<List<Product>>()
+				{
+
+					@Override
+					public List<Product> onBackground( ) throws Exception
+					{
+						return App.getCrudService().list(Product.class);
+					}
+
+					@Override
+					public void onDone(List<Product> response)
+					{
+						DataUtils.setProducts(response);
+
+					}
+				}, this);
 	}
 }

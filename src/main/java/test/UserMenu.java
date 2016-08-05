@@ -22,9 +22,9 @@ public class UserMenu
 {
 	public static void drawUserMenu(JPanel myPanel, JRibbonBand band1)
 	{
-		JCommandButton button1 = new JCommandButton("Customer", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_app_kthememgr.png"));
-		JCommandButton button2 = new JCommandButton("Supplier", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_app_ksame.png"));
-		JCommandButton button3 = new JCommandButton("Company", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_app_error.png"));
+		JCommandButton button1 = new JCommandButton("Customer", MainFrame.getResizableIconFromResource("customer.png"));
+		JCommandButton button2 = new JCommandButton("Supplier", MainFrame.getResizableIconFromResource("supplier.png"));
+		JCommandButton button3 = new JCommandButton("Company", MainFrame.getResizableIconFromResource("company.png"));
 
 		band1.addCommandButton(button1, RibbonElementPriority.TOP);
 		band1.addCommandButton(button2, RibbonElementPriority.MEDIUM);
@@ -47,7 +47,7 @@ public class UserMenu
 	
 	public static void drawTransactions(JPanel myPanel, JRibbonBand band1)
 	{
-		JCommandButton btnCheck = new JCommandButton("Check", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
+		JCommandButton btnCheck = new JCommandButton("Check", MainFrame.getResizableIconFromResource("check.png"));
 		JCommandButton btnTransactionCustomer = new JCommandButton("Customer Transaction", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_app_ksame.png"));
 		JCommandButton btnTransactionSupplier = new JCommandButton("Supplier Transaction", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_app_kthememgr.png"));
 		JCommandButton btnContract = new JCommandButton("Contract", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
@@ -74,7 +74,7 @@ public class UserMenu
 	
 	public static JCommandButton drawProjects(JPanel myPanel, JRibbonBand band1)
 	{
-		JCommandButton btnProject = new JCommandButton("Project", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
+		JCommandButton btnProject = new JCommandButton("Project", MainFrame.getResizableIconFromResource("project.png"));
 		JCommandButton btnBlock = new JCommandButton("Block", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
 		JCommandButton btnFlat = new JCommandButton("Flat", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
 
@@ -133,5 +133,32 @@ public class UserMenu
 		});*/
 
 		
+	}
+	
+	public static void drawStock(JPanel myPanel, JRibbonBand band1)
+	{
+		JCommandButton btnStock = new JCommandButton("Stock", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
+		JCommandButton btnTransactionCustomer = new JCommandButton("Customer Transaction", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_app_ksame.png"));
+		JCommandButton btnTransactionSupplier = new JCommandButton("Supplier Transaction", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_app_kthememgr.png"));
+		JCommandButton btnContract = new JCommandButton("Contract", MainFrame.getResizableIconFromResource("48px-Crystal_Clear_action_bookmark.png"));
+
+		band1.addCommandButton(btnStock, RibbonElementPriority.TOP);
+		/*band1.addCommandButton(btnTransactionCustomer, RibbonElementPriority.MEDIUM);
+		band1.addCommandButton(btnTransactionSupplier, RibbonElementPriority.MEDIUM);
+		band1.addCommandButton(btnContract, RibbonElementPriority.MEDIUM);*/
+
+		btnTransactionCustomer.addActionListener(e -> {
+			buildPanel(myPanel,new CustomerTransactionPanel());
+		});
+		btnTransactionSupplier.addActionListener(e -> {
+			buildPanel(myPanel,new TransactionPanel());
+		});
+		
+		btnContract.addActionListener(e -> {
+			buildPanel(myPanel, new ContractPanel());
+		});
+		btnStock.addActionListener(e->{
+			buildPanel(myPanel, new CheckCrudPanel());
+		});
 	}
 }

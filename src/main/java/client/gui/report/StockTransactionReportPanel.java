@@ -6,23 +6,23 @@
 package client.gui.report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.table.TableColumnModel;
 
 import test.DataUtils;
 import client.App;
 import client.gui.button.ButtonFactory;
-import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
-import client.rmiclient.classes.crud.tableReflection.Column;
 import client.utils.ExCombo;
-import client.utils.MessageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
+import client.utils.table.NumberRenderer;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -30,31 +30,33 @@ import com.jgoodies.forms.layout.FormLayout;
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.action.bean.ReportTableModel;
+import desktopadmin.action.bean.ReportTableModel.ExtraRowIndex;
+import desktopadmin.model.accounting.EnumType.ExtraRowType;
+import desktopadmin.model.stock.Product;
 
 /**
  *
  * @author User
  */
-public class SupplierTransactionReportPanel extends JpanelTemplate
+public class StockTransactionReportPanel extends JpanelTemplate
 {
 
-	
 	private ReportFilterTableFrame filterTableFrame;
 
 	private List data;
 
-	private ExCombo<Entry> comboCustomer;
+	private ExCombo<Entry> comboSupplier;
 
-	
+	private ExCombo<Product> comboProduct;
+
 	private JButton btnSearch;
-	
 
-	public SupplierTransactionReportPanel(String title)
+	public StockTransactionReportPanel(String title)
 	{
 		super();
 	}
 
-	public SupplierTransactionReportPanel( )
+	public StockTransactionReportPanel( )
 	{
 		this("Report");
 	}
@@ -62,7 +64,7 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 	@Override
 	public void init( )
 	{
-		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow","p,p,fill:p:grow"),this);
+		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow","p,p,fill:p:grow"), this);
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
@@ -70,51 +72,30 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 		builder.append(filterTableFrame);
 
 	}
-	
+
 	@Override
 	public void initComponents( )
 	{
 		filterTableFrame = new ReportFilterTableFrame();
-		
-		comboCustomer = new ExCombo<>();
-		
+
+		comboSupplier = new ExCombo<>();
+
+		comboProduct = new ExCombo<>("All", DataUtils.getProducts());
+
 		btnSearch = ButtonFactory.createBtnSearch();
-		btnSearch.addActionListener(e->{
-			
-			if (validateSelection())
-			{
-				fillCrudTable();
-			}
+		btnSearch.addActionListener(e -> {
+
+			fillCrudTable();
 		});
-		
+
 		fillData();
 
-	}
-
-	private boolean validateSelection( )
-	{
-		String message = "";
-		if(comboCustomer.getValue()==null)
-		{
-			message+="Please Select Customer \\n";
-		}
-		
-		
-		if(!message.isEmpty()){
-			MessageUtils.showWarningMessage(this, message);
-			return false;
-		}
-		
-		return true;
-		
 	}
 
 	private void fillData( )
 	{
 		ProgressBar.execute(new ProgressBarListener<ContractBean>()
 		{
-
-			
 
 			@Override
 			public ContractBean onBackground( ) throws Exception
@@ -128,18 +109,20 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 				List<Entry> entries = new ArrayList<>();
 				entries.addAll(response.getCompanies());
 				entries.addAll(response.getSuppliers());
-				
-				comboCustomer.setValues(entries);
+
+				comboSupplier.setValues("All", entries);
 			}
 		}, this);
-		
+
 	}
 
 	private JPanel getController( )
 	{
 		JPanel panel = new JPanel();
 		panel.add(new JLabel("Suppliers"));
-		panel.add(comboCustomer);
+		panel.add(comboSupplier);
+		panel.add(new JLabel("Product"));
+		panel.add(comboProduct);
 		panel.add(btnSearch);
 
 		return panel;
@@ -155,7 +138,9 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 			@Override
 			public ReportTableModel onBackground( ) throws Exception
 			{
-				return App.getCrudService().getSupplierTransaction(comboCustomer.getValue().getId(), DataUtils.getSelectedProjectId());
+				Long productId = comboProduct.getValue() == null ? -1L : comboProduct.getValue().getId();
+				Long supplierId = comboSupplier.getValue() == null ? -1L : comboSupplier.getValue().getId();
+				return App.getCrudService().getStock(productId, supplierId, DataUtils.getSelectedProjectId());
 			}
 
 			@Override
@@ -167,32 +152,23 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 		}, this);
 	}
 
-	public void setData(List data)
-	{
-		this.data = data;
-	}
-
 	public void setData(ReportTableModel reportTableModel)
 	{
-		filterTableFrame.fillValues(fromReportTableModel(reportTableModel));
+
+		if(reportTableModel.isEmpty())
+			return;
+		
+		reportTableModel.addExtrass(Arrays.asList(new ExtraRowIndex(2, ExtraRowType.SUM),
+				new ExtraRowIndex(3, ExtraRowType.SUM),
+				new ExtraRowIndex(5, ExtraRowType.SUM)
+				
+		));
+
+		filterTableFrame.fillValues(SupplierTransactionReportPanel.fromReportTableModel(reportTableModel));
+
+		TableColumnModel m = filterTableFrame.getTable().getColumnModel();
+		m.getColumn(4).setCellRenderer(NumberRenderer.getCurrencyRenderer());
+		m.getColumn(5).setCellRenderer(NumberRenderer.getCurrencyRenderer());
 	}
-
-	@SuppressWarnings("rawtypes")
-	public static BeanTableModel fromReportTableModel(ReportTableModel reportTableModel)
-	{
-		int counter = 0;
-
-		List<Column> columns = new ArrayList<>();
-		for (String col : reportTableModel.cols)
-		{
-			Column column = new Column(col);
-			column.setType(reportTableModel.clazzes.get(counter++ ));
-			columns.add(column);
-		}
-
-		return new BeanTableModel<>(columns, reportTableModel.rows);
-	}
-
-	
 
 }

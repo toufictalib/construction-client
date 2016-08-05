@@ -5,20 +5,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
-
-
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-
-
 
 import test.DataUtils;
 import test.PaymentPanel;
@@ -31,23 +24,16 @@ import client.utils.MessageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
 
-
-
-
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
-
-
-
 
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.ContractEntry;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.CustomerTransaction;
 import desktopadmin.model.accounting.EnumType.Payer;
-import desktopadmin.model.accounting.EnumType.PaymentMovement;
-import desktopadmin.model.accounting.Transaction;
+import desktopadmin.model.accounting.EnumType.TransactionType;
 import desktopadmin.model.accounting.TransactionCause;
 import desktopadmin.model.sold.Contract;
 
@@ -64,7 +50,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 	private JTextField txtDescription;
 
 
-	private ExCombo<PaymentMovement> comboPaymentMovement;
+	private ExCombo<TransactionType> comboPaymentMovement;
 
 	private ExCombo<Entry> comboCustomer;
 	
@@ -134,7 +120,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 		txtDescription = new JTextField();
 
 
-		comboPaymentMovement = new ExCombo<PaymentMovement>(PaymentMovement.values());
+		comboPaymentMovement = new ExCombo<TransactionType>(TransactionType.values());
 
 		comboCustomer = new ExCombo<>();
 		comboCustomer.addItemListener(e->{
@@ -236,7 +222,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 				
 				
 				//DoubleStream mapToDouble = transaction.getPayments().stream().mapToDouble(ee->ee.getValue());
-				transaction.setPaymentMovement(PaymentMovement.PAYMENT);
+				transaction.setTransactionType(TransactionType.PAYMENT);
 				
 				transaction.setProject(DataUtils.getSelectedProject());
 				

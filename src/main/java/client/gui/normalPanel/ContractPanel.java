@@ -33,7 +33,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.CustomerTransaction;
-import desktopadmin.model.accounting.EnumType.PaymentMovement;
+import desktopadmin.model.accounting.EnumType.TransactionType;
 import desktopadmin.model.accounting.EnumType.RealEstateType;
 import desktopadmin.model.accounting.Transaction;
 import desktopadmin.model.accounting.TransactionCause;
@@ -199,7 +199,7 @@ public class ContractPanel extends JpanelTemplate
 					BuyinhPaymenttransaction.setReferenceId(comboCustomers.getValue().getId());
 
 					BuyinhPaymenttransaction.setDescritpion("Buying new Flat");
-					BuyinhPaymenttransaction.setPaymentMovement(PaymentMovement.PURCHASE);
+					BuyinhPaymenttransaction.setTransactionType(TransactionType.PURCHASE);
 
 					BuyinhPaymenttransaction.setProject(comboProjects.getValue());
 
@@ -213,7 +213,7 @@ public class ContractPanel extends JpanelTemplate
 					downPaymenttransaction.setReferenceId(comboCustomers.getValue().getId());
 
 					downPaymenttransaction.setDescritpion("Down Payment for Customer " + comboCustomers.getValue().getName() + "\n" + "because of buying a " + comboRealEstateType.getValue());
-					downPaymenttransaction.setPaymentMovement(PaymentMovement.PAYMENT);
+					downPaymenttransaction.setTransactionType(TransactionType.PAYMENT);
 
 					downPaymenttransaction.setProject(comboProjects.getValue());
 					contractBean.setContract(contract);

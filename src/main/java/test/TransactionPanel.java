@@ -24,9 +24,8 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
-import desktopadmin.model.accounting.CustomerTransaction;
 import desktopadmin.model.accounting.EnumType.Payer;
-import desktopadmin.model.accounting.EnumType.PaymentMovement;
+import desktopadmin.model.accounting.EnumType.TransactionType;
 import desktopadmin.model.accounting.SupplierTransaction;
 import desktopadmin.model.accounting.Transaction;
 import desktopadmin.model.accounting.TransactionCause;
@@ -42,27 +41,27 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 	
 
-	private JTextField txtDescription;
+	protected JTextField txtDescription;
 
-	private ExCombo<PaymentMovement> comboPaymentMovement;
+	protected ExCombo<TransactionType> comboPaymentMovement;
 
-	private JCheckBox cbCompany;
+	protected JCheckBox cbCompany;
 	
-	private ExCombo<Entry> comboSupplier;
+	protected ExCombo<Entry> comboSupplier;
 
-	private ExCombo<TransactionCause> comboTransactionCause;
+	protected ExCombo<TransactionCause> comboTransactionCause;
 
 	private List<Entry> suppliers;
 
 	private List<Entry> companies;
 
-	private JTextArea txtAreaNote;
+	protected JTextArea txtAreaNote;
 
-	private PaymentPanel paymentPanel;
+	protected PaymentPanel paymentPanel;
 
-	private JButton btnSave;
+	protected JButton btnSave;
 
-	private JButton btnClose;
+	protected JButton btnClose;
 
 	// holders
 	private List<TransactionCause> transactionCauses;
@@ -117,7 +116,7 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 		txtDescription = new JTextField();
 
-		comboPaymentMovement = new ExCombo<PaymentMovement>(PaymentMovement.values());
+		comboPaymentMovement = new ExCombo<TransactionType>(TransactionType.values());
 
 		comboSupplier = new ExCombo<>();
 
@@ -181,7 +180,7 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 		}
 	}
 
-	private void save( )
+	protected void save( )
 	{
 		ProgressBar.execute(new ProgressBarListener<Void>()
 		{
@@ -202,7 +201,7 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 				// DoubleStream mapToDouble =
 				// transaction.getPayments().stream().mapToDouble(ee->ee.getValue());
-				transaction.setPaymentMovement(PaymentMovement.PAYMENT);
+				transaction.setTransactionType(TransactionType.PAYMENT);
 
 				transaction.setProject(DataUtils.getSelectedProject());
 

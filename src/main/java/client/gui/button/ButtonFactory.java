@@ -30,7 +30,7 @@ public class ButtonFactory {
     }
     
     public static JButton createBtnApply() {
-        return new JButton("Apply", ImageUtils.getAddIcon());
+        return new JButton("Apply", ImageUtils.getApplyIcon());
     }
     
     public static JButton createBtnCancel() {

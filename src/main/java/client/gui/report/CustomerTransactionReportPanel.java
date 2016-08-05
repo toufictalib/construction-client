@@ -71,7 +71,7 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 	@Override
 	public void init( )
 	{
-		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow"),this);
+		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow","p,p,fill:p:grow"),this);
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");

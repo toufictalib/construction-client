@@ -23,6 +23,7 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 
 import client.gui.button.ButtonFactory;
+import client.gui.image.ImageUtils;
 import client.utils.DefaultFormBuilderUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -39,21 +40,40 @@ public class WindowUtils {
     public static final String dispatchWindowClosingActionMapKey
             = "com.spodding.tackline.dispatch:WINDOW_CLOSING";
 
-    public static void installEscapeCloseOperation(final JDialog dialog) {
+    public static void installEscapeCloseOperation(final Window dialog) {
         Action dispatchClosing = new AbstractAction() {
-            public void actionPerformed(ActionEvent event) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -3745952682763164967L;
+
+			public void actionPerformed(ActionEvent event) {
                 dialog.dispatchEvent(new WindowEvent(
                         dialog, WindowEvent.WINDOW_CLOSING
                 ));
             }
         };
-        JRootPane root = dialog.getRootPane();
+        
+        
+        JRootPane root = null;
+		if (dialog instanceof JDialog)
+		{
+
+			root = ( (JDialog) dialog ).getRootPane();
+		}
+		else if(dialog instanceof JFrame)
+		{
+			root = ( (JFrame) dialog ).getRootPane();
+		}
+		else throw new UnsupportedOperationException("installEscapeCloseOperation::please pass dialog or frame as parameter or add new type to conditions statement");
+		
         root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
                 escapeStroke, dispatchWindowClosingActionMapKey
         );
         root.getActionMap().put(dispatchWindowClosingActionMapKey, dispatchClosing
         );
     }
+    
 
     
     public static JDialog createDialog(Window owner, String title, JPanel jp) {
@@ -70,6 +90,20 @@ public class WindowUtils {
         return frame;
     }
     
+    public static JFrame createFrame(String title, JPanel jp) {
+        JFrame frame = new JFrame(title);
+        WindowUtils.installEscapeCloseOperation(frame);
+        frame.setTitle(title);
+        frame.setIconImage(ImageUtils.getSoftwareIcon().getImage());
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setContentPane(jp);
+        frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setMinimumSize(frame.getPreferredSize());
+        frame.setVisible(true);
+        return frame;
+    }
+    
     
     public static JDialog createDialogWithOkAndCancel(Window owner, String title, JPanel jp,WindowWithButtonsActionListener listener) {
         JDialog frame = new JDialog(owner);
@@ -80,7 +114,8 @@ public class WindowUtils {
         JButton btnOk = ButtonFactory.createBtnApply();
         JButton btnClose = ButtonFactory.createBtnClose();
 
-        ActionListener actionListener = e->
+        @SuppressWarnings("unused")
+		ActionListener actionListener = e->
         {
         	if(e.getSource()==btnOk)
         	{

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.table.TableColumnModel;
 
 import test.DataUtils;
@@ -41,7 +42,7 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 	private List data;
 
 
-	
+	private JLabel summary;
 	
 
 	public ProjectIncomeExpensesReportPanel(String title)
@@ -57,10 +58,11 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 	@Override
 	public void init( )
 	{
-		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow"),this);
+		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow","p,p,fill:p:grow"),this);
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
+		builder.append(summary);
 		builder.append(filterTableFrame);
 
 	}
@@ -70,7 +72,7 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 	{
 		filterTableFrame = new ReportFilterTableFrame();
 		
-		
+		summary = new JLabel();
 		
 		fillCrudTable();
 	}
@@ -113,6 +115,10 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 		TableColumnModel m = filterTableFrame.getTable().getColumnModel();
 		m.getColumn(5).setCellRenderer(NumberRenderer.getCurrencyRenderer());
 		m.getColumn(6).setCellRenderer(NumberRenderer.getCurrencyRenderer());
+		
+		Double balance = reportTableModel.getValueFromExtraRow(5)-reportTableModel.getValueFromExtraRow(6);
+		
+		summary.setText("Stock Balance : "+balance);
 	}
 
 	@SuppressWarnings("rawtypes")

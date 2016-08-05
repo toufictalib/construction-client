@@ -64,5 +64,13 @@ public class ImageUtils {
      public static ImageIcon getRefreshIcon() {
         return ImageHelperCustom.get().getImageIcon("refresh.png");
     }
+     public static ImageIcon getApplyIcon() {
+    	 return ImageHelperCustom.get().getImageIcon("apply.png");
+     }
+     
+     
+     public static ImageIcon getSoftwareIcon() {
+    	 return ImageHelperCustom.get().getImageIcon("menus/project.png");
+     }
     
 }

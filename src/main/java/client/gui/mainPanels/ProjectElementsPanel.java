@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import test.DataUtils;
-import test.TransactionPanel;
+import test.SupplierTransactionPanel;
 import client.gui.crudPanel.BlockCrudPanel;
 import client.gui.crudPanel.FlatCrudPanel;
 import client.gui.mainPanels.ProjectChooserPanel.ProjectButtonsActionListener;
@@ -20,6 +20,7 @@ import client.gui.normalPanel.ContractPanel;
 import client.gui.report.ContractReportPanel;
 import client.gui.report.CustomerTransactionReportPanel;
 import client.gui.report.ProjectIncomeExpensesReportPanel;
+import client.gui.report.StockTransactionReportPanel;
 import client.gui.report.SupplierTransactionReportPanel;
 import client.gui.window.WindowUtils;
 import client.rmiclient.classes.crud.JpanelTemplate;
@@ -27,6 +28,7 @@ import client.utils.ComponentUtils;
 import client.utils.DefaultFormBuilderUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import desktopadmin.model.building.Project;
@@ -96,9 +98,9 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 	{
 
 		// init
-		JButton btnAddSupplierTransaction = new JButton("Add Supplier Transaction");
-		JButton btnAddCustomerTransaction = new JButton("Add Customer Transaction");
-		JButton btnAddContract = new JButton("Add Contract");
+		JButton btnAddSupplierTransaction = createMenuButton("Add Supplier Transaction");
+		JButton btnAddCustomerTransaction = createMenuButton("Add Customer Transaction");
+		JButton btnAddContract = createMenuButton("Add Contract");
 
 		ActionListener actionListener = e -> {
 			if (e.getSource() == btnAddCustomerTransaction)
@@ -109,7 +111,7 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 			else
 				if (e.getSource() == btnAddSupplierTransaction)
 				{
-					open(new TransactionPanel(), "Supplier Transaction");
+					open(new SupplierTransactionPanel(), "Supplier Transaction");
 				}
 				else
 					if (e.getSource() == btnAddContract)
@@ -134,20 +136,32 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 
 	}
 
+	private JButton createMenuButton(String text)
+	{
+		JButton btn = new JButton(text);
+		btn.setPreferredSize(new Dimension(200,btn.getPreferredSize().height));return btn;
+	}
 	private void open(JpanelTemplate panelTemplate, String title)
 	{
 		panelTemplate.lazyInitalize();
-		WindowUtils.createDialog(getOwner(), title, panelTemplate);
+		WindowUtils.createDialog(getOwner(),title, panelTemplate);
+	}
+	
+	private void openReport(JpanelTemplate panelTemplate, String title)
+	{
+		panelTemplate.lazyInitalize();
+		WindowUtils.createFrame(title, panelTemplate);
 	}
 
 	private JPanel getProjectDetailsPanel( )
 	{
 
 		// init
-		JButton btnAddBlock = new JButton("Add Block");
-		JButton btnAddFlat = new JButton("Add Flat");
-		JButton btnAddStore = new JButton("Add Store");
-		JButton btnAddWarehouse = new JButton("Add WareHouse");
+		JButton btnAddBlock = createMenuButton("Add Block");
+		JButton btnAddFlat = createMenuButton("Add Flat");
+		//btnAddBlock.setPreferredSize(new Dimension(250,btnAddBlock.getPreferredSize().height));
+		JButton btnAddStore = createMenuButton("Add Store");
+		JButton btnAddWarehouse = createMenuButton("Add WareHouse");
 
 		ActionListener actionListener = e -> {
 			if (e.getSource() == btnAddBlock)
@@ -195,33 +209,29 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 	{
 
 		// init
-		JButton btnShowCustomerTransaction = new JButton("Show Customer Transaction");
-		JButton btnShowSupplierTransaction = new JButton("Show Supplier Transaction");
-		JButton btnShowContract = new JButton("Show Contract Information");
-		JButton btnShowIncomeAndExpenses = new JButton("Show Income & Expenses");
+		JButton btnShowCustomerTransaction = createMenuButton("Show Customer Transaction");
+		JButton btnShowSupplierTransaction = createMenuButton("Show Supplier Transaction");
+		JButton btnShowContract = createMenuButton("Show Contract Information");
+		JButton btnShowIncomeAndExpenses = createMenuButton("Show Income & Expenses");
 
 		ActionListener actionListener = e -> {
 			if (e.getSource() == btnShowCustomerTransaction)
 			{
 
-				open(new CustomerTransactionReportPanel(), "Report");
+				openReport(new CustomerTransactionReportPanel(), "Customer Report");
 			}
 			
 			else if(e.getSource()==btnShowSupplierTransaction)
 			{
-				open(new SupplierTransactionReportPanel(), "Report");
+				openReport(new SupplierTransactionReportPanel(), "Supplier Report");
 			}
 			else if(e.getSource()==btnShowContract)
 			{
-				ContractReportPanel contractReportPanel = new ContractReportPanel();
-				contractReportPanel.lazyInitalize();
-				contractReportPanel.showFrame(getOwner());
-				//open(new ContractReportPanel(), "Report");
+				openReport(new ContractReportPanel(), "Contract Report");
 			}
 			else if(e.getSource()==btnShowIncomeAndExpenses)
 			{
-				ProjectIncomeExpensesReportPanel contractReportPanel = new ProjectIncomeExpensesReportPanel();
-				open(contractReportPanel,"Report");
+				openReport(new ProjectIncomeExpensesReportPanel(),"Income and Expenses Report");
 			}
 		};
 
@@ -238,6 +248,33 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		builder.append(btnShowSupplierTransaction);
 		builder.append(btnShowContract);
 		builder.append(btnShowIncomeAndExpenses);
+
+		return builder.getPanel();
+
+	}
+	
+	
+	private JPanel getStockSection( )
+	{
+
+		// init
+		JButton btnShowStocks = createMenuButton("Show Stocks");
+
+		ActionListener actionListener = e -> {
+			if (e.getSource() == btnShowStocks)
+			{
+
+				openReport(new StockTransactionReportPanel(), "Report");
+			}
+		};
+
+		btnShowStocks.addActionListener(actionListener);
+
+		// initl layout
+		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
+		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Stocks"));
+
+		builder.append(btnShowStocks);
 
 		return builder.getPanel();
 
@@ -263,12 +300,21 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 
 			DataUtils.setSelectedProject(project);
 
-			DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
+			FormLayout formLayout = new FormLayout("fill:p:grow,10dlu,fill:p:grow", "p,p");
+			DefaultFormBuilder builder = new DefaultFormBuilder(formLayout);
 
 			//builder.append(lblSelectedProject);
-			builder.append(getProjectDetailsPanel());
+			CellConstraints cc = new CellConstraints();
+			
+			builder.add(getProjectDetailsPanel(),  cc.xy  (1, 1, "left, top"));
+			builder.add(getFinancePanel(),  cc.xy  (3, 1, "left, top"));
+			builder.add(getReportDetails(),  cc.xy  (1, 2, "left, top"));
+			builder.add(getStockSection(),  cc.xy  (3, 2, "left, top"));
+			
+			/*builder.append(getProjectDetailsPanel());
 			builder.append(getFinancePanel());
 			builder.append(getReportDetails());
+			builder.append(getStockSection());*/
 
 			rightPanel.add(builder.getPanel());
 			rightPanel.revalidate();

@@ -6,11 +6,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
+import org.pushingpixels.flamingo.api.ribbon.resize.CoreRibbonResizePolicies.None;
+
 public class ExCombo<T> extends JComboBox {
 	private static final long serialVersionUID = -8406426154902695060L;
+	private String firstLabel= NONE;
 	public static final String NONE = "None";
 
 	public boolean withNone;
@@ -31,6 +35,11 @@ public class ExCombo<T> extends JComboBox {
 
 	public ExCombo(Collection<T> items) {
 		this(false, items);
+	}
+	
+	public ExCombo(String firstLabel,Collection<T> items) {
+		this.firstLabel = firstLabel;
+		init(true, items);
 	}
 
 	public ExCombo(boolean withNone, Collection<T> items) {
@@ -58,8 +67,10 @@ public class ExCombo<T> extends JComboBox {
 
 		DefaultComboBoxModel boxModel = new DefaultComboBoxModel(list.toArray());
 		if (withNone)
-			boxModel.insertElementAt(NONE, 0);
+			boxModel.insertElementAt(firstLabel, 0);
 		setModel(boxModel);
+		if(boxModel.getSize()>0)
+			setSelectedIndex(0);
 		 //((Component) getRenderer()).applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 	}
 
@@ -67,7 +78,7 @@ public class ExCombo<T> extends JComboBox {
 	public T getValue() {
 		Object selectedItem = getSelectedItem();
 		if (withNone && selectedItem instanceof String
-				&& selectedItem.toString().equals(NONE))
+				&& selectedItem.toString().equals(firstLabel))
 			return null;
 		return (T) selectedItem;
 
@@ -81,6 +92,13 @@ public class ExCombo<T> extends JComboBox {
         public void setValues(boolean withNone, Collection<T> items)
         {
           init(withNone,items);
+        }
+        
+        public void setValues(String firstLabel, Collection<T> items)
+        {
+        	this.firstLabel = firstLabel;
+          setValues(true, items);
+          
         }
         
         public void setValues(Collection<T> items)

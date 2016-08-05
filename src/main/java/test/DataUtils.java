@@ -11,6 +11,7 @@ import desktopadmin.model.accounting.TransactionCause;
 import desktopadmin.model.accounting.payment.Check;
 import desktopadmin.model.building.Project;
 import desktopadmin.model.person.Title;
+import desktopadmin.model.stock.Product;
 
 public class DataUtils
 {
@@ -22,6 +23,8 @@ public class DataUtils
 	private static Project selectedProject;
 	
 	public final static int MAX_ROWS = 1000;
+	
+	private static List<Product> products;
 	
 	
 
@@ -63,6 +66,17 @@ public class DataUtils
 	public static void setSelectedProject(Project selectedProject)
 	{
 		DataUtils.selectedProject = selectedProject;
+	}
+
+	
+	public static List<Product> getProducts( )
+	{
+		return products;
+	}
+
+	public static void setProducts(List<Product> products)
+	{
+		DataUtils.products = products;
 	}
 
 	public static List<Bank> banks( )
