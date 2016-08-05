@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.table.TableColumnModel;
 
 import test.DataUtils;
 import client.App;
@@ -26,12 +27,14 @@ import client.gui.button.ButtonFactory;
 import client.gui.window.WindowUtils;
 import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
+import client.rmiclient.classes.crud.ReportFilterTableFrame;
 import client.rmiclient.classes.crud.tableReflection.Column;
 import client.utils.DefaultFormBuilderUtils;
 import client.utils.ExCombo;
 import client.utils.MessageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
+import client.utils.table.NumberRenderer;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -40,6 +43,8 @@ import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.ContractEntry;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.action.bean.ReportTableModel;
+import desktopadmin.action.bean.ReportTableModel.ExtraRowIndex;
+import desktopadmin.model.accounting.EnumType.ExtraRowType;
 import desktopadmin.model.sold.Contract;
 
 /**
@@ -61,10 +66,12 @@ public class ContractReportPanel extends JpanelTemplate
 	
 	private List<Contract> contracts;
 	
+	private JPanel bodyPanel;
 	
 	private Map<Object, List<ContractEntry>> contractEntryByCustomer;
 	
-	private JPanel bodyPanel;
+	private ReportFilterTableFrame filterTableFrame;
+	
 
 	public ContractReportPanel(String title)
 	{
@@ -79,19 +86,22 @@ public class ContractReportPanel extends JpanelTemplate
 	@Override
 	public void init( )
 	{
-		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow","p,p,fill:p:grow"),this);
+		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:p:grow","p,p,p,fill:p:grow"),this);
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
 		builder.append(getController());
 		builder.append(bodyPanel);
+		builder.append(filterTableFrame);
 
 	}
 	
 	@Override
 	public void initComponents( )
 	{
-		bodyPanel = new JPanel(new BorderLayout());
+		filterTableFrame = new ReportFilterTableFrame();
+		
+		bodyPanel= new JPanel(new BorderLayout());
 		
 		comboContract = new ExCombo<>();
 		comboCustomer = new ExCombo<>();
@@ -249,6 +259,15 @@ public class ContractReportPanel extends JpanelTemplate
 				double totalPayment=0;
 				double totalPurchase=0;
 				
+				
+				response.addExtrass(Arrays.asList(new ExtraRowIndex(2,ExtraRowType.SUM),new ExtraRowIndex(3,ExtraRowType.SUM)));
+				
+				filterTableFrame.fillValues(fromReportTableModel(response));
+				
+				TableColumnModel m = filterTableFrame.getTable().getColumnModel();
+				m.getColumn(2).setCellRenderer(NumberRenderer.getCurrencyRenderer());
+				m.getColumn(3).setCellRenderer(NumberRenderer.getCurrencyRenderer());
+				
 				buffer.append(getRow(response.cols));
 				for(List o:response.rows)
 				{
@@ -258,8 +277,7 @@ public class ContractReportPanel extends JpanelTemplate
 					totalPayment+=getValue(o.get(3));
 				}
 				
-				buffer.append("total Payment : "+totalPayment+"\n");
-				buffer.append("total Purchase: "+totalPurchase+"\n");
+				
 				
 				Contract contract = getSelectedProject();
 				DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("p,10dlu,fill:p:grow", null, false);
@@ -276,7 +294,9 @@ public class ContractReportPanel extends JpanelTemplate
 				builder.append("Real Estate",  new JLabel(contract.getRealEstate().getDescription()));
 				builder.append("Price($)",  new JLabel(contract.getRealEstate().getPrice()+" $"));
 				builder.append("Entilement Date",  new JLabel(contract.getEntilementDate().toString()));
-				builder.append(new JTextArea(buffer.toString()),builder.getColumnCount());
+				builder.append("total Payment",new JLabel(totalPayment+""));
+				builder.append("total Purchase",new JLabel(totalPurchase+""));
+				//builder.append(new JTextArea(buffer.toString()),builder.getColumnCount());
 				bodyPanel.removeAll();
 				bodyPanel.add(builder.getPanel());
 				bodyPanel.repaint();

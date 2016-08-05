@@ -38,6 +38,8 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 
 	private JLabel lblSelectedProject;
 
+	
+
 	public ProjectElementsPanel( )
 	{
 		lazyInitalize();
@@ -61,8 +63,7 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		 * CellConstraints(); builder.add(rightPanel), cc.xy(2, 1,
 		 * "center, top"));
 		 */
-		
-		
+
 		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("p,10dlu,p", "fill:p:grow"));
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.LEADING));
@@ -72,7 +73,7 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		builder.append(projectChooserPanel);
 		builder.append(rightPanel);
 
-		DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow"), this);		
+		DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow"), this);
 		mainBuilder.append(lblSelectedProject);
 		mainBuilder.append(builder.getPanel());
 		// this.add(panel);
@@ -94,189 +95,125 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 
 	}
 
-	private JPanel getFinancePanel( )
+	private JPanel getSupplierFinance( )
 	{
 
-		// init
-		JButton btnAddSupplierTransaction = createMenuButton("Add Supplier Transaction");
-		JButton btnAddCustomerTransaction = createMenuButton("Add Customer Transaction");
-		JButton btnAddContract = createMenuButton("Add Contract");
-
 		ActionListener actionListener = e -> {
-			if (e.getSource() == btnAddCustomerTransaction)
+			if (FINACNE_SUPPLIER_PURCHASE_INVOICE.equals(e.getActionCommand()))
 			{
 				open(new CustomerTransactionPanel(), "Customer Transaction");
 
 			}
 			else
-				if (e.getSource() == btnAddSupplierTransaction)
+				if (FINACNE_SUPPLIER_INVOICE_PAYMENT.equals(e.getActionCommand()))
 				{
 					open(new SupplierTransactionPanel(), "Supplier Transaction");
 				}
 				else
-					if (e.getSource() == btnAddContract)
+					if (FINACNE_SUPPLIER_RECEIVE_STUFFS.equals(e.getActionCommand()))
 					{
 						open(new ContractPanel(), "Contract");
 					}
 		};
 
-		btnAddSupplierTransaction.addActionListener(actionListener);
-		btnAddCustomerTransaction.addActionListener(actionListener);
-		btnAddContract.addActionListener(actionListener);
+		return createMenu("Supplier Finance", actionListener, FINACNE_SUPPLIER_PURCHASE_INVOICE, FINACNE_SUPPLIER_INVOICE_PAYMENT, FINACNE_SUPPLIER_RECEIVE_STUFFS);
 
-		// initl layout
-		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
-		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Finance"));
-
-		builder.append(btnAddCustomerTransaction);
-		builder.append(btnAddSupplierTransaction);
-		builder.append(btnAddContract);
-
-		return builder.getPanel();
-
-	}
-
-	private JButton createMenuButton(String text)
-	{
-		JButton btn = new JButton(text);
-		btn.setPreferredSize(new Dimension(200,btn.getPreferredSize().height));return btn;
-	}
-	private void open(JpanelTemplate panelTemplate, String title)
-	{
-		panelTemplate.lazyInitalize();
-		WindowUtils.createDialog(getOwner(),title, panelTemplate);
 	}
 	
-	private void openReport(JpanelTemplate panelTemplate, String title)
+	private JPanel getCustomerFinance( )
 	{
-		panelTemplate.lazyInitalize();
-		WindowUtils.createFrame(title, panelTemplate);
+
+		ActionListener actionListener = e -> {
+			if (FINACNE_CUSTOMER_ADD_CONTRACT.equals(e.getActionCommand()))
+			{
+				open(new CustomerTransactionPanel(), "Customer Transaction");
+
+			}
+			else
+				if (FINACNE_CUSTOMER_PAY_RECEIPT.equals(e.getActionCommand()))
+				{
+					open(new SupplierTransactionPanel(), "Supplier Transaction");
+				}
+		};
+
+		return createMenu("Customer Finance", actionListener, FINACNE_CUSTOMER_ADD_CONTRACT, FINACNE_CUSTOMER_PAY_RECEIPT);
+
 	}
 
 	private JPanel getProjectDetailsPanel( )
 	{
 
-		// init
-		JButton btnAddBlock = createMenuButton("Add Block");
-		JButton btnAddFlat = createMenuButton("Add Flat");
-		//btnAddBlock.setPreferredSize(new Dimension(250,btnAddBlock.getPreferredSize().height));
-		JButton btnAddStore = createMenuButton("Add Store");
-		JButton btnAddWarehouse = createMenuButton("Add WareHouse");
-
 		ActionListener actionListener = e -> {
-			if (e.getSource() == btnAddBlock)
+			if (e.getActionCommand().equals(PROJECT_ADD_BLOCK))
 			{
 
 				open(new BlockCrudPanel(), "Block");
 			}
 			else
-				if (e.getSource() == btnAddFlat)
+				if (e.getActionCommand().equals(PROJECT_ADD_FLAT))
 				{
 					open(new FlatCrudPanel(), "Flat");
 				}
 				else
-					if (e.getSource() == btnAddStore)
+					if (e.getActionCommand().equals(PROJECT_ADD_STORE))
 					{
 
 					}
 
 					else
-						if (e.getSource() == btnAddWarehouse)
+						if (e.getActionCommand().equals(PROJECT_ADD_WAREHOUSE))
 						{
 
 						}
 		};
 
-		btnAddBlock.addActionListener(actionListener);
-		btnAddFlat.addActionListener(actionListener);
-		btnAddStore.addActionListener(actionListener);
-		btnAddWarehouse.addActionListener(actionListener);
-
-		// initl layout
-		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
-		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Project Details"));
-
-		builder.append(btnAddBlock);
-		builder.append(btnAddFlat);
-		builder.append(btnAddStore);
-		builder.append(btnAddWarehouse);
-
-		return builder.getPanel();
+		return createMenu("Project Details", actionListener, PROJECT_ADD_BLOCK, PROJECT_ADD_FLAT, PROJECT_ADD_STORE, PROJECT_ADD_WAREHOUSE);
 
 	}
-	
+
 	private JPanel getReportDetails( )
 	{
 
-		// init
-		JButton btnShowCustomerTransaction = createMenuButton("Show Customer Transaction");
-		JButton btnShowSupplierTransaction = createMenuButton("Show Supplier Transaction");
-		JButton btnShowContract = createMenuButton("Show Contract Information");
-		JButton btnShowIncomeAndExpenses = createMenuButton("Show Income & Expenses");
-
 		ActionListener actionListener = e -> {
-			if (e.getSource() == btnShowCustomerTransaction)
+			if (e.getActionCommand().equals(REPORT_Show_Customer_Transaction))
 			{
 
 				openReport(new CustomerTransactionReportPanel(), "Customer Report");
 			}
-			
-			else if(e.getSource()==btnShowSupplierTransaction)
-			{
-				openReport(new SupplierTransactionReportPanel(), "Supplier Report");
-			}
-			else if(e.getSource()==btnShowContract)
-			{
-				openReport(new ContractReportPanel(), "Contract Report");
-			}
-			else if(e.getSource()==btnShowIncomeAndExpenses)
-			{
-				openReport(new ProjectIncomeExpensesReportPanel(),"Income and Expenses Report");
-			}
+
+			else
+				if (e.getActionCommand().equals(REPORT_Show_Supplier_Transaction))
+				{
+					openReport(new SupplierTransactionReportPanel(), "Supplier Report");
+				}
+				else
+					if (e.getActionCommand().equals(REPORT_Show_Contract_Information))
+					{
+						openReport(new ContractReportPanel(), "Contract Report");
+					}
+					else
+						if (e.getActionCommand().equals(REPORT_Show_Income_Expenses))
+						{
+							openReport(new ProjectIncomeExpensesReportPanel(), "Income and Expenses Report");
+						}
 		};
 
-		btnShowCustomerTransaction.addActionListener(actionListener);
-		btnShowSupplierTransaction.addActionListener(actionListener);
-		btnShowContract.addActionListener(actionListener);
-		btnShowIncomeAndExpenses.addActionListener(actionListener);
-
-		// initl layout
-		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
-		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Reports"));
-
-		builder.append(btnShowCustomerTransaction);
-		builder.append(btnShowSupplierTransaction);
-		builder.append(btnShowContract);
-		builder.append(btnShowIncomeAndExpenses);
-
-		return builder.getPanel();
+		return createMenu("Reports", actionListener, REPORT_Show_Customer_Transaction, REPORT_Show_Supplier_Transaction, REPORT_Show_Contract_Information, REPORT_Show_Income_Expenses);
 
 	}
-	
-	
+
 	private JPanel getStockSection( )
 	{
 
-		// init
-		JButton btnShowStocks = createMenuButton("Show Stocks");
-
 		ActionListener actionListener = e -> {
-			if (e.getSource() == btnShowStocks)
+			if (e.getActionCommand().equals(STOCK_SHOW_STOCK))
 			{
 
-				openReport(new StockTransactionReportPanel(), "Report");
+				openReport(new StockTransactionReportPanel(), "Stock Movement");
 			}
 		};
 
-		btnShowStocks.addActionListener(actionListener);
-
-		// initl layout
-		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
-		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Stocks"));
-
-		builder.append(btnShowStocks);
-
-		return builder.getPanel();
+		return createMenu("Stocks", actionListener, STOCK_SHOW_STOCK);
 
 	}
 
@@ -300,21 +237,24 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 
 			DataUtils.setSelectedProject(project);
 
-			FormLayout formLayout = new FormLayout("fill:p:grow,10dlu,fill:p:grow", "p,p");
+			FormLayout formLayout = new FormLayout("fill:p:grow,10dlu,fill:p:grow", "p,p,p");
 			DefaultFormBuilder builder = new DefaultFormBuilder(formLayout);
 
-			//builder.append(lblSelectedProject);
+			// builder.append(lblSelectedProject);
 			CellConstraints cc = new CellConstraints();
-			
-			builder.add(getProjectDetailsPanel(),  cc.xy  (1, 1, "left, top"));
-			builder.add(getFinancePanel(),  cc.xy  (3, 1, "left, top"));
-			builder.add(getReportDetails(),  cc.xy  (1, 2, "left, top"));
-			builder.add(getStockSection(),  cc.xy  (3, 2, "left, top"));
-			
-			/*builder.append(getProjectDetailsPanel());
-			builder.append(getFinancePanel());
-			builder.append(getReportDetails());
-			builder.append(getStockSection());*/
+
+			builder.add(getProjectDetailsPanel(), cc.xy(1, 1, "left, top"));
+			builder.add(getSupplierFinance(), cc.xy(3, 1, "left, top"));
+			builder.add(getCustomerFinance(), cc.xy(3, 2, "left, top"));
+			builder.add(getReportDetails(), cc.xy(1, 2, "left, top"));
+			builder.add(getStockSection(), cc.xy(3, 3, "left, top"));
+
+			/*
+			 * builder.append(getProjectDetailsPanel());
+			 * builder.append(getFinancePanel());
+			 * builder.append(getReportDetails());
+			 * builder.append(getStockSection());
+			 */
 
 			rightPanel.add(builder.getPanel());
 			rightPanel.revalidate();
@@ -322,4 +262,64 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		}
 
 	}
+
+	private JPanel createMenu(String menuTitle, ActionListener actionListener, String... menus)
+	{
+
+		// initl layout
+		DefaultFormBuilder builder = DefaultFormBuilderUtils.createRightDefaultFormBuilder("fill:p:grow", null, false);
+		builder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), menuTitle));
+
+		for (String menu : menus)
+		{
+			JButton btnAddSupplierTransaction = createMenuButton(menu);
+			btnAddSupplierTransaction.addActionListener(actionListener);
+
+			builder.append(btnAddSupplierTransaction);
+		}
+
+		return builder.getPanel();
+
+	}
+
+	private JButton createMenuButton(String text)
+	{
+		JButton btn = new JButton(text);
+		btn.setPreferredSize(new Dimension(200, btn.getPreferredSize().height));
+		return btn;
+	}
+
+	private void open(JpanelTemplate panelTemplate, String title)
+	{
+		panelTemplate.lazyInitalize();
+		WindowUtils.createDialog(getOwner(), title, panelTemplate);
+	}
+
+	private void openReport(JpanelTemplate panelTemplate, String title)
+	{
+		panelTemplate.lazyInitalize();
+		WindowUtils.createFrame(title, panelTemplate);
+	}
+	
+	
+	//menus
+	private static final String FINACNE_SUPPLIER_PURCHASE_INVOICE = "Purchase Invoice";
+	private static final String FINACNE_SUPPLIER_INVOICE_PAYMENT = "Supplier Payment";
+	private static final String FINACNE_SUPPLIER_RECEIVE_STUFFS = "Receive products";
+	
+
+	private static final String FINACNE_CUSTOMER_PAY_RECEIPT= "Pay Receipt";
+	private static final String FINACNE_CUSTOMER_ADD_CONTRACT= "Add Contract";
+	
+	private final static String PROJECT_ADD_BLOCK = "Add Block";
+	private final static String PROJECT_ADD_FLAT = "Add Flat";
+	private final static String PROJECT_ADD_STORE = "Add Store";
+	private final static String PROJECT_ADD_WAREHOUSE = "Add WareHouse";
+
+	public final static String REPORT_Show_Customer_Transaction = "Show Customer Transaction";
+	public final static String REPORT_Show_Supplier_Transaction = "Show Supplier Transaction";
+	public final static String REPORT_Show_Contract_Information = "Show Contract Information";
+	public final static String REPORT_Show_Income_Expenses = "Show Income & Expenses";
+
+	public final static String STOCK_SHOW_STOCK = "Show Stocks";
 }
