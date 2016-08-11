@@ -35,7 +35,7 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
 
 	protected CrudPanel crudPanel;
 
-    protected JButton btnSave;
+    
     protected JButton btnCancel;
     protected JButton btnClose;
     
@@ -48,7 +48,7 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
     public void hideButtons()
     {
         btnCancel.setVisible(false);
-        btnSave.setVisible(false);
+      
     }
     @Override
     public void init() {
@@ -63,11 +63,11 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
 
         if(btnClose.isVisible())
         {
-        builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel, btnSave,btnClose));
+        builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel,btnClose));
         }
         else
         {
-        	builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel, btnSave));
+        	builder.append(ButtonBarFactory.buildRightAlignedBar(btnCancel));
         }
 
     }
@@ -94,8 +94,7 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
         crudPanel.lazyInitalize();
        
         
-        btnSave = ButtonFactory.createBtnSave();
-        btnSave.addActionListener(this);
+       
 
         btnCancel = ButtonFactory.createBtnCancel();
         btnCancel.addActionListener(this);
@@ -157,9 +156,7 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnSave) {
-            btnSaveAction();
-        } else if (e.getSource() == btnCancel) {
+        if (e.getSource() == btnCancel) {
             resetModifications();
         }
         else if(e.getSource()==btnClose)
@@ -179,5 +176,10 @@ public abstract class ExtendedCrudPanel extends JpanelTemplate implements Action
                 btnCancelAction();
             }
 
+    }
+    
+    @Override
+    public void save() {
+        btnSaveAction();
     }
 }

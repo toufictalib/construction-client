@@ -130,6 +130,7 @@ public class StockPanel extends JpanelTemplate implements ActionListener
 	
 	private void setRendererAndEditor( )
 	{
+		table.setRowHeight(25);
 		table.setDefaultEditor(Double.class, new DefaultCellEditor(new DoubleTextField()));
 		table.setDefaultEditor(Currency.class, new DefaultCellEditor(comboCurrency));
 		table.setDefaultEditor(Product.class, new DefaultCellEditor(comboProduct));
@@ -193,6 +194,11 @@ public class StockPanel extends JpanelTemplate implements ActionListener
 
 	}
 
+	public boolean isEmpty()
+	{
+		return tableModel.getRows().isEmpty();
+	}
+	
 	public int getVisibleRowCount( )
 	{
 		return visibleRowCount;

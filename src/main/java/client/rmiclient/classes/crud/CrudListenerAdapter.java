@@ -30,5 +30,12 @@ public class CrudListenerAdapter implements CrudPanel.CrudListener{
     public <T> void update(T t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+	@Override
+	public void save( )
+	{
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		
+	}
     
 }

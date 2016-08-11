@@ -3,6 +3,7 @@ package client.gui.normalPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,10 +34,11 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.CustomerTransaction;
-import desktopadmin.model.accounting.EnumType.TransactionType;
+import desktopadmin.model.accounting.SupplierTransaction;
+import desktopadmin.model.accounting.EnumType.Payer;
 import desktopadmin.model.accounting.EnumType.RealEstateType;
+import desktopadmin.model.accounting.EnumType.TransactionType;
 import desktopadmin.model.accounting.Transaction;
-import desktopadmin.model.accounting.TransactionCause;
 import desktopadmin.model.building.Block;
 import desktopadmin.model.building.Project;
 import desktopadmin.model.building.RealEstate;
@@ -81,8 +83,6 @@ public class ContractPanel extends JpanelTemplate
 		paymentPanel = new PaymentPanel();
 		paymentPanel.lazyInitalize();
 
-		comboProjects = new ExCombo<>();
-		fillProjects();
 
 		txtDescription = new JTextArea(3, 5);
 
@@ -124,25 +124,6 @@ public class ContractPanel extends JpanelTemplate
 	}
 
 	
-	private void fillProjects( )
-	{
-		ProgressBar.execute(new ProgressBarListener<List<Project>>()
-		{
-
-			@Override
-			public List<Project> onBackground( ) throws Exception
-			{
-				return App.getCrudService().list(Project.class);
-			}
-
-			@Override
-			public void onDone(List<Project> response)
-			{
-
-				comboProjects.setValues(true, response);
-			}
-		}, this);
-	}
 
 	private void fillRealEstateCombo( )
 	{
@@ -166,6 +147,22 @@ public class ContractPanel extends JpanelTemplate
 
 	}
 	
+	
+	private void checkValidation() throws Exception
+	{
+		StringBuilder builder = new StringBuilder();
+		if(txtDescription==null)
+		{
+			builder.append("Add Description\n");
+		}
+		
+		if(builder.length()>0)
+			throw new Exception(builder.toString());
+	}
+	/**
+	 * 
+	 * @return
+	 */
 	private ActionListener createBtnSaveActionListener( )
 	{
 		return e -> {
@@ -176,6 +173,7 @@ public class ContractPanel extends JpanelTemplate
 				public Void onBackground( ) throws Exception
 				{
 
+					checkValidation();
 					Contract contract = new Contract();
 
 					Customer customer = new Customer();
@@ -190,32 +188,27 @@ public class ContractPanel extends JpanelTemplate
 					ContractBean contractBean = new ContractBean();
 
 					// Buying transaction
-					Transaction BuyinhPaymenttransaction = new CustomerTransaction();
+					CustomerTransaction BuyinhPaymenttransaction = new CustomerTransaction();
 					BuyinhPaymenttransaction.setValue(Long.valueOf(txtDprice.getText()));
-					TransactionCause transactionCause = new TransactionCause();
-					transactionCause.setId(Long.valueOf(3 + ""));
-					BuyinhPaymenttransaction.setPaymentCause(transactionCause);
-
 					BuyinhPaymenttransaction.setReferenceId(comboCustomers.getValue().getId());
-
 					BuyinhPaymenttransaction.setDescritpion("Buying new Flat");
-					BuyinhPaymenttransaction.setTransactionType(TransactionType.PURCHASE);
-
-					BuyinhPaymenttransaction.setProject(comboProjects.getValue());
+					BuyinhPaymenttransaction.setValue(txtDprice.getValue());
+					BuyinhPaymenttransaction.setTransactionType(TransactionType.PURCHASE_REAL_ESTATE);
+					BuyinhPaymenttransaction.setProject(DataUtils.getSelectedProject());
+					BuyinhPaymenttransaction.setContract(contract);
+					BuyinhPaymenttransaction.setCreationDate(new Date());
 
 					// Down payment transaction
-					Transaction downPaymenttransaction = paymentPanel.getTransaction(new CustomerTransaction());
-
-					transactionCause = new TransactionCause();
-					transactionCause.setId(Long.valueOf(1 + ""));
-					downPaymenttransaction.setPaymentCause(transactionCause);
-
+					CustomerTransaction downPaymenttransaction = (CustomerTransaction) paymentPanel.getTransaction(new CustomerTransaction());
 					downPaymenttransaction.setReferenceId(comboCustomers.getValue().getId());
-
+					downPaymenttransaction.setTransactionType(TransactionType.PAYMENT_DOWN);
 					downPaymenttransaction.setDescritpion("Down Payment for Customer " + comboCustomers.getValue().getName() + "\n" + "because of buying a " + comboRealEstateType.getValue());
-					downPaymenttransaction.setTransactionType(TransactionType.PAYMENT);
-
-					downPaymenttransaction.setProject(comboProjects.getValue());
+					downPaymenttransaction.setTransactionType(TransactionType.PAYMENT_DOWN);
+					downPaymenttransaction.setProject(DataUtils.getSelectedProject());
+					downPaymenttransaction.setPayer(Payer.CUSTOMER);
+					downPaymenttransaction.setCreationDate(new Date());
+					downPaymenttransaction.setContract(contract);
+					
 					contractBean.setContract(contract);
 					
 					List<Transaction> transactions = new ArrayList<>();
@@ -295,7 +288,6 @@ public class ContractPanel extends JpanelTemplate
 
 	private ExCombo<Entry> comboCustomers;
 
-	private ExCombo<Project> comboProjects;
 
 	private ExCombo<RealEstateType> comboRealEstateType;
 

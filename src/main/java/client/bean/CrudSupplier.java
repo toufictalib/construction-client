@@ -17,7 +17,7 @@ public class CrudSupplier
 	@TableColumnAnnotation(editable = true, name = "Name", required = true)
 	private String name;
 
-	@TableColumnAnnotation(editable = true, name = "Middle Name", required = true)
+	@TableColumnAnnotation(editable = true, name = "Middle Name")
 	private String middleName;
 
 	@TableColumnAnnotation(editable = true, name = "Last Name", required = true)
@@ -26,10 +26,10 @@ public class CrudSupplier
 	@TableColumnAnnotation(editable = true, name = "Phone 1", required = true)
 	private String phone1;
 
-	@TableColumnAnnotation(editable = true, name = "Phone 2", required = true)
+	@TableColumnAnnotation(editable = true, name = "Phone 2")
 	private String phone2;
 
-	@TableColumnAnnotation(editable = true, name = "Email", required = true)
+	@TableColumnAnnotation(editable = true, name = "Email")
 	private String email;
 
 	@TableColumnAnnotation(editable = true, name = "Title", required = true)

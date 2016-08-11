@@ -47,6 +47,7 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
     private JButton btnRefresh;
     private JButton btnDelete;
     private JButton btnAdd;
+    protected JButton btnSave;
 
     protected CrudListener crudListener;
 
@@ -78,8 +79,8 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
         builder.appendSeparator("Manage");
         }
         
-        builder.append(ButtonBarFactory.buildLeftAlignedBar(btnRefresh));
-        builder.append(ButtonBarFactory.buildRightAlignedBar(btnDelete, btnAdd));
+        builder.append(ButtonBarFactory.buildLeftAlignedBar(btnRefresh,btnDelete,btnAdd));
+        builder.append(ButtonBarFactory.buildRightAlignedBar(btnSave));
 
         builder.appendSeparator();
         builder.append(filterTableFrame,3);
@@ -100,6 +101,9 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
 
         btnRefresh = client.gui.button.ButtonFactory.createBtnRefresh();
         btnRefresh.addActionListener(this);
+        
+        btnSave = ButtonFactory.createBtnSave();
+        btnSave.addActionListener(this);
         
         //keys
        
@@ -164,6 +168,10 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
         {
             refresh();
         }
+        else if(e.getSource() == btnSave)
+        {
+        	crudListener.save();
+        }
 
     }
 
@@ -195,6 +203,7 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
         btnAdd.setVisible(false);
         btnDelete.setVisible(false);
         btnRefresh.setVisible(false);
+        btnSave.setVisible(false);
     }
     
      public void showRefreshButton()
@@ -276,6 +285,8 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
         public void cancel();
 
         public <T> void update(T t);
+        
+        public void save();
         
         
     }

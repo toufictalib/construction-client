@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +19,6 @@ import test.PaymentPanel;
 import client.App;
 import client.gui.button.ButtonFactory;
 import client.rmiclient.classes.crud.JpanelTemplate;
-import client.utils.ComponentUtils;
 import client.utils.ExCombo;
 import client.utils.MessageUtils;
 import client.utils.ProgressBar;
@@ -32,9 +32,7 @@ import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.ContractEntry;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.CustomerTransaction;
-import desktopadmin.model.accounting.EnumType.Payer;
 import desktopadmin.model.accounting.EnumType.TransactionType;
-import desktopadmin.model.accounting.TransactionCause;
 import desktopadmin.model.sold.Contract;
 
 public class CustomerTransactionPanel extends JpanelTemplate implements ActionListener
@@ -50,13 +48,12 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 	private JTextField txtDescription;
 
 
-	private ExCombo<TransactionType> comboPaymentMovement;
+//	private ExCombo<TransactionType> comboPaymentMovement;
 
 	private ExCombo<Entry> comboCustomer;
 	
 	private ExCombo<ContractEntry> comboContract;
 
-	private ExCombo<TransactionCause> comboTransactionCause;
 
 
 	private JTextArea txtAreaNote;
@@ -69,16 +66,12 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 
 	private JButton btnClose;
 
-	// holders
-	private List<TransactionCause> transactionCauses;
 
 	private Map<Long, List<ContractEntry>> contractEntryByCustomer;
 	
-	private Payer payer;
 
 	public CustomerTransactionPanel()
 	{
-		this.payer = Payer.CUSTOMER;
 	}
 
 	@Override
@@ -94,8 +87,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 		builder.append("Customer", comboCustomer);
 		builder.append("Contract", comboContract);
 		builder.append("Description", txtDescription);
-		builder.append("Movement", comboPaymentMovement);
-		builder.append("Transaction Cause", comboTransactionCause);
+	//	builder.append("Movement", comboPaymentMovement);
 		builder.append("Note", txtAreaNote);
 
 		builder.append(paymentPanel, col);
@@ -113,14 +105,13 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 		paymentPanel.setVisibleRowCount(8);
 		paymentPanel.lazyInitalize();
 		// init data
-		transactionCauses = DataUtils.transactionCauses(payer);
 
 
 
 		txtDescription = new JTextField();
 
 
-		comboPaymentMovement = new ExCombo<TransactionType>(TransactionType.values());
+		//comboPaymentMovement = new ExCombo<TransactionType>(TransactionType.values());
 
 		comboCustomer = new ExCombo<>();
 		comboCustomer.addItemListener(e->{
@@ -143,7 +134,6 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 
 		comboContract = new ExCombo<>();
 		
-		comboTransactionCause = new ExCombo<TransactionCause>(transactionCauses);
 
 
 		txtAreaNote = new JTextArea(5, 5);
@@ -176,8 +166,7 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 			{
 				contractEntryByCustomer = response.getContracts().stream().collect(Collectors.groupingBy(e->e.getCustomerId()));
 				
-				comboCustomer.setValues(response.getCustomers());
-				ComponentUtils.fireCombobBox(comboCustomer);
+				comboCustomer.setValues(true,response.getCustomers());
 				
 				
 			}
@@ -210,23 +199,14 @@ public class CustomerTransactionPanel extends JpanelTemplate implements ActionLi
 				
 				CustomerTransaction transaction = (CustomerTransaction) paymentPanel.getTransaction(new CustomerTransaction());
 				
-				TransactionCause transactionCause = new TransactionCause();
-				transactionCause.setId(Long.valueOf(1+""));
-				transaction.setPaymentCause(transactionCause);
-				
 				
 				transaction.setReferenceId(comboCustomer.getValue().getId());
-				
 				transaction.setDescritpion(txtDescription.getText().trim());
-				
-				
-				
-				//DoubleStream mapToDouble = transaction.getPayments().stream().mapToDouble(ee->ee.getValue());
-				transaction.setTransactionType(TransactionType.PAYMENT);
-				
+				transaction.setTransactionType(TransactionType.PAYMENT_RECEIPT);
 				transaction.setProject(DataUtils.getSelectedProject());
-				
 				transaction.setContract(new Contract(comboContract.getValue().getId()));
+				transaction.setNote(txtAreaNote.getText());
+				transaction.setCreationDate(new Date());
 				
 				App.getCrudService().saveOrUpdate(Arrays.asList(transaction));
 				

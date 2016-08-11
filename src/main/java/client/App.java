@@ -19,6 +19,18 @@ public class App
 	
 	public static Crud getCrudService( )
 	{
+		if(crudService==null)
+		{
+			try
+			{
+				Thread.sleep(10000);
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return crudService;
 	}
 
@@ -29,6 +41,7 @@ public class App
 	}
 
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args)
 	{
 		

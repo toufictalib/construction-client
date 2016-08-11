@@ -2,7 +2,6 @@ package test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -12,9 +11,9 @@ import javax.swing.JTextField;
 
 import client.App;
 import client.gui.button.ButtonFactory;
+import client.gui.input.DoubleTextField;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.utils.ExCombo;
-import client.utils.MessageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
 
@@ -25,9 +24,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.EnumType.Payer;
-import desktopadmin.model.accounting.EnumType.TransactionType;
-import desktopadmin.model.accounting.SupplierTransaction;
-import desktopadmin.model.accounting.Transaction;
 import desktopadmin.model.accounting.TransactionCause;
 
 public class TransactionPanel extends JpanelTemplate implements ActionListener
@@ -43,19 +39,21 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 	protected JTextField txtDescription;
 
-	protected ExCombo<TransactionType> comboPaymentMovement;
+	//protected ExCombo<TransactionType> comboPaymentMovement;
 
 	protected JCheckBox cbCompany;
 	
 	protected ExCombo<Entry> comboSupplier;
 
-	protected ExCombo<TransactionCause> comboTransactionCause;
+	//protected ExCombo<TransactionCause> comboTransactionCause;
 
 	private List<Entry> suppliers;
 
 	private List<Entry> companies;
 
 	protected JTextArea txtAreaNote;
+	
+	protected DoubleTextField txtAmount;
 
 	protected PaymentPanel paymentPanel;
 
@@ -66,9 +64,10 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 	// holders
 	private List<TransactionCause> transactionCauses;
 
-	private Payer payer;
+	protected Payer payer;
 
-	public TransactionPanel( )
+	
+	public TransactionPanel()
 	{
 		this.payer = Payer.SUPPLIER;
 	}
@@ -91,9 +90,10 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 		builder.append(cbCompany,col);
 		builder.append("Supplier", comboSupplier);
 		builder.append("Description", txtDescription);
+		builder.append("Amount",txtAmount);
 		
-		builder.append("Movement", comboPaymentMovement);
-		builder.append("Transaction Cause", comboTransactionCause);
+		//builder.append("Movement", comboPaymentMovement);
+		//builder.append("Transaction Cause", comboTransactionCause);
 		builder.append("Note", txtAreaNote);
 
 		builder.append(paymentPanel, col);
@@ -109,6 +109,8 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 		paymentPanel = new PaymentPanel();
 		paymentPanel.lazyInitalize();
+		
+		this.txtAmount = new DoubleTextField();
 
 		// init data
 		transactionCauses = DataUtils.transactionCauses(payer);
@@ -116,11 +118,11 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 		txtDescription = new JTextField();
 
-		comboPaymentMovement = new ExCombo<TransactionType>(TransactionType.values());
+		//comboPaymentMovement = new ExCombo<TransactionType>(TransactionType.values());
 
 		comboSupplier = new ExCombo<>();
 
-		comboTransactionCause = new ExCombo<TransactionCause>(transactionCauses);
+		//comboTransactionCause = new ExCombo<TransactionCause>(transactionCauses);
 
 		txtAreaNote = new JTextArea(5, 5);
 
@@ -180,9 +182,38 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 		}
 	}
 
+	protected void checkValidation( ) throws Exception
+	{
+		StringBuilder builder = new StringBuilder();
+		if (comboSupplier.getValue() == null)
+		{
+			if (cbCompany.isSelected())
+			{
+				builder.append("Select a Company\n");
+			}
+			else
+			{
+				builder.append("Select a supplier\n");
+			}
+		}
+		
+		if(txtDescription.getText().trim().isEmpty())
+		{
+			builder.append("Fill Descritpion\n");
+		}
+		/*if(comboTransactionCause.getValue()==null)
+		{
+			builder.append("Select a Transaction Cause\n");
+		}*/
+		
+		if(builder.length()>0)
+			throw new Exception(builder.toString());
+
+	}
+	
 	protected void save( )
 	{
-		ProgressBar.execute(new ProgressBarListener<Void>()
+		/*ProgressBar.execute(new ProgressBarListener<Void>()
 		{
 
 			@Override
@@ -191,17 +222,15 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 				Transaction transaction = paymentPanel.getTransaction(new SupplierTransaction());
 
-				TransactionCause transactionCause = new TransactionCause();
-				transactionCause.setId(Long.valueOf(1 + ""));
-				transaction.setPaymentCause(transactionCause);
+			
+				//transaction.setPaymentCause(transactionCause);
+				transaction.setTransactionType(transactionType);
 
 				transaction.setReferenceId(comboSupplier.getValue().getId());
 
 				transaction.setDescritpion(txtDescription.getText().trim());
 
-				// DoubleStream mapToDouble =
-				// transaction.getPayments().stream().mapToDouble(ee->ee.getValue());
-				transaction.setTransactionType(TransactionType.PAYMENT);
+				transaction.setTransactionType(TransactionType.PAYMENT_INVOICE);
 
 				transaction.setProject(DataUtils.getSelectedProject());
 
@@ -216,7 +245,7 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 				MessageUtils.showInfoMessage(TransactionPanel.this, "Data has been saved successfully");
 
 			}
-		}, this);
+		}, this);*/
 
 	}
 

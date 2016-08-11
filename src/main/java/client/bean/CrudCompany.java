@@ -17,13 +17,13 @@ public class CrudCompany
 	@TableColumnAnnotation(editable = true, name = "Phone 1", required = true)
 	private String phone1;
 
-	@TableColumnAnnotation(editable = true, name = "Phone 2", required = true)
+	@TableColumnAnnotation(editable = true, name = "Phone 2")
 	private String phone2;
 
 	@TableColumnAnnotation(editable = true, name = "Email", required = true)
 	private String email;
 
-	@TableColumnAnnotation(editable = true, name = "Note", required = true)
+	@TableColumnAnnotation(editable = true, name = "Note")
 	private String note;
 
 	public Long getId( )

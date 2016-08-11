@@ -151,6 +151,7 @@ public class PaymentPanel extends JpanelTemplate implements ActionListener
 
 	private void setRendererAndEditor( )
 	{
+		tablePayment.setRowHeight(25);
 		tablePayment.setDefaultEditor(Double.class, new DefaultCellEditor(new DoubleTextField()));
 		tablePayment.setDefaultEditor(Currency.class, new DefaultCellEditor(comboCurrency));
 		tablePayment.setDefaultEditor(PaymentType.class, new DefaultCellEditor(new ExCombo<>(PaymentType.values())));
@@ -226,6 +227,9 @@ public class PaymentPanel extends JpanelTemplate implements ActionListener
 		this.visibleRowCount = visibleRowCount;
 	}
 	
-	
+	public boolean isEmpty()
+	{
+		return paymentTableModel.getRowCount()==0;
+	}
 
 }

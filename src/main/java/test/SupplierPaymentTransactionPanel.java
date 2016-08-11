@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.swing.JTabbedPane;
 
+import org.hibernate.bytecode.buildtime.spi.ExecutionException;
+
 import client.App;
 import client.utils.ComponentUtils;
 import client.utils.MessageUtils;
@@ -21,16 +23,15 @@ import desktopadmin.model.accounting.SupplierTransaction;
 import desktopadmin.model.accounting.Transaction;
 
 
-public class SupplierTransactionPanel extends TransactionPanel
+public class SupplierPaymentTransactionPanel extends TransactionPanel
 {
 
 	private static final long serialVersionUID = 1162579958949980922L;
 
-	private StockPanel stockPanel;
 	
 	private JTabbedPane tabbedPane;
 	
-	public SupplierTransactionPanel()
+	public SupplierPaymentTransactionPanel( )
 	{
 		super();
 	}
@@ -40,8 +41,6 @@ public class SupplierTransactionPanel extends TransactionPanel
 	{
 		super.initComponents();
 		
-		stockPanel = new StockPanel();
-		stockPanel.lazyInitalize();
 		
 		tabbedPane = new JTabbedPane();
 	}
@@ -60,7 +59,6 @@ public class SupplierTransactionPanel extends TransactionPanel
 		miscBuilder.append(cbCompany,col);
 		miscBuilder.append("Supplier", comboSupplier);
 		miscBuilder.append("Description", txtDescription);
-		miscBuilder.append("Amount", txtAmount);
 		
 		//builder.append("Movement", comboPaymentMovement);
 		//miscBuilder.append("Transaction Cause", comboTransactionCause);
@@ -68,7 +66,6 @@ public class SupplierTransactionPanel extends TransactionPanel
 
 		tabbedPane.addTab("Misc",miscBuilder.getPanel());
 		tabbedPane.addTab("Payment",paymentPanel);
-		tabbedPane.addTab("Stock",stockPanel);
 		/*JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setLeftComponent(stockPanel);
 		splitPane.setRightComponent(paymentPanel);*/
@@ -81,11 +78,18 @@ public class SupplierTransactionPanel extends TransactionPanel
 		this.setPreferredSize(new Dimension(ComponentUtils.getDimension(60, 60)));
 	}
 
+	protected void checkValidation( ) throws Exception
+	{
+		super.checkValidation();
+		
+		if(paymentPanel.isEmpty())
+		{
+			throw new ExecutionException("Select at least one payment way");
+		}
+	}
 	/**
-	 * we should create three transactions
-	 * 1-Purchase transaction manadatory
-	 * 2-Payment transaction if existing 
-	 * 3-Stock transaction if existing
+	 * we should create one transaction
+	 * 1-Payment transaction manadatory 
 	 */
 	@Override
 	protected void save( )
@@ -110,22 +114,7 @@ public class SupplierTransactionPanel extends TransactionPanel
 				
 				List<Transaction> transactions = new ArrayList<>();
 				
-				//create purchase transaction
-				Transaction purchaseTransaction = new SupplierTransaction();
-				purchaseTransaction.setDescritpion(txtDescription.getText().trim());
-				purchaseTransaction.setReferenceId(comboSupplier.getValue().getId());
-				purchaseTransaction.setValue(txtAmount.getValue());
-				purchaseTransaction.setTransactionType(TransactionType.PURCHASE_INVOICE);
-				//purchaseTransaction.setPaymentCause(comboTransactionCause.getValue());
-				purchaseTransaction.setPayer(payer);
-				purchaseTransaction.setNote(txtAreaNote.getText().trim());
-				purchaseTransaction.setProject(DataUtils.getSelectedProject());
-				purchaseTransaction.setCreationDate(new Date());
 				
-				transactions.add(purchaseTransaction);
-				
-				if ( !paymentPanel.isEmpty())
-				{
 					// create payment transaction
 					Transaction paymentTransaction = paymentPanel.getTransaction(new SupplierTransaction());
 					paymentTransaction.setDescritpion("PAYMENT " + paymentTransaction.getValue());
@@ -137,30 +126,12 @@ public class SupplierTransactionPanel extends TransactionPanel
 					paymentTransaction.setNote(txtAreaNote.getText().trim());
 					paymentTransaction.setProject(DataUtils.getSelectedProject());
 					paymentTransaction.setCreationDate(new Date());
+					
+					
+					
 					transactions.add(paymentTransaction);
 
-				}
 				
-				
-				
-				
-				
-				
-				if ( !stockPanel.isEmpty())
-				{
-					// create stock transaction
-					Transaction stockTransaction = stockPanel.getTransaction(new SupplierTransaction());
-					stockTransaction.setDescritpion("STOCK");
-					stockTransaction.setReferenceId(comboSupplier.getValue().getId());
-					stockTransaction.setValue(txtAmount.getValue());
-					stockTransaction.setTransactionType(TransactionType.STOCK_INIT);
-					//stockTransaction.setPaymentCause(comboTransactionCause.getValue());
-					stockTransaction.setPayer(payer);
-					stockTransaction.setProject(DataUtils.getSelectedProject());
-					stockTransaction.setCreationDate(new Date());
-
-					transactions.add(stockTransaction);
-				}
 
 
 				App.getCrudService().saveOrUpdate(transactions);
@@ -171,7 +142,7 @@ public class SupplierTransactionPanel extends TransactionPanel
 			@Override
 			public void onDone(Void response)
 			{
-				MessageUtils.showInfoMessage(SupplierTransactionPanel.this, "Data has been saved successfully");
+				MessageUtils.showInfoMessage(SupplierPaymentTransactionPanel.this, "Data has been saved successfully");
 
 			}
 		}, this);

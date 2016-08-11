@@ -27,7 +27,7 @@ public class DataUtils
 	private static List<Product> products;
 	
 	
-
+	
 	public static List<Check> getChecks(Bank bank)
 	{
 		
@@ -99,9 +99,11 @@ public class DataUtils
 
 	public static List<TransactionCause> transactionCauses(Payer payer)
 	{
-		return transactionCauses.stream()
+		/*return transactionCauses.stream()
 				.filter(e->e.getPayer()==payer)
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
+		
+		return new ArrayList<>();
 	}
 
 	public static List<Title> titles( )

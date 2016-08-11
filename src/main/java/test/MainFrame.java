@@ -115,9 +115,9 @@ public class MainFrame extends JRibbonFrame
 				projects.setResizePolicies(bandResizePolicies);
 				main.setResizePolicies(bandResizePolicies);
 
-				RibbonTask task3 = new RibbonTask("Projects", projects);
-				RibbonTask task1 = new RibbonTask("Users", users);
-				RibbonTask task2 = new RibbonTask("Misc", transactions);
+				RibbonTask taskProjects = new RibbonTask("Projects", projects);
+				RibbonTask taskUser = new RibbonTask("Users", users);
+				RibbonTask taskMisc = new RibbonTask("Misc", transactions);
 				//RibbonTask mainTask = new RibbonTask("Main", main);
 
 				
@@ -154,9 +154,9 @@ public class MainFrame extends JRibbonFrame
 				frame.add(myPanel);
 				
 				//frame.getRibbon().addTask(mainTask);
-				frame.getRibbon().addTask(task3);
-				frame.getRibbon().addTask(task2);
-				frame.getRibbon().addTask(task1);
+				frame.getRibbon().addTask(taskProjects);
+				frame.getRibbon().addTask(taskUser);
+				frame.getRibbon().addTask(taskMisc);
 				//frame.getRibbon().setApplicationMenu(ribbonApplicationMenu);
 				frame.pack();
 				frame.setIconImage(ImageUtils.getSoftwareIcon().getImage());

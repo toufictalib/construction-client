@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import test.DataUtils;
+import test.StockTransactionPanel;
+import test.SupplierPaymentTransactionPanel;
 import test.SupplierTransactionPanel;
 import client.gui.crudPanel.BlockCrudPanel;
 import client.gui.crudPanel.FlatCrudPanel;
@@ -101,18 +103,18 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		ActionListener actionListener = e -> {
 			if (FINACNE_SUPPLIER_PURCHASE_INVOICE.equals(e.getActionCommand()))
 			{
-				open(new CustomerTransactionPanel(), "Customer Transaction");
+				open(new SupplierTransactionPanel(), "Supplier Purchase Transaction");
 
 			}
 			else
 				if (FINACNE_SUPPLIER_INVOICE_PAYMENT.equals(e.getActionCommand()))
 				{
-					open(new SupplierTransactionPanel(), "Supplier Transaction");
+					open(new SupplierPaymentTransactionPanel(), "Supplier Payment Transaction");
 				}
 				else
 					if (FINACNE_SUPPLIER_RECEIVE_STUFFS.equals(e.getActionCommand()))
 					{
-						open(new ContractPanel(), "Contract");
+						open(new StockTransactionPanel(), "Receiving Stock");
 					}
 		};
 
@@ -126,17 +128,24 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		ActionListener actionListener = e -> {
 			if (FINACNE_CUSTOMER_ADD_CONTRACT.equals(e.getActionCommand()))
 			{
-				open(new CustomerTransactionPanel(), "Customer Transaction");
+				open(new ContractPanel(), "Create Contract");
 
 			}
 			else
 				if (FINACNE_CUSTOMER_PAY_RECEIPT.equals(e.getActionCommand()))
 				{
-					open(new SupplierTransactionPanel(), "Supplier Transaction");
+					open(new CustomerTransactionPanel(), "Pay Receipt");
+				}
+				else if(FINACNE_CUSTOMER_CANCEL_CONTRACT.equals(e.getActionCommand()))
+				{
+					
 				}
 		};
 
-		return createMenu("Customer Finance", actionListener, FINACNE_CUSTOMER_ADD_CONTRACT, FINACNE_CUSTOMER_PAY_RECEIPT);
+		return createMenu("Customer Finance", actionListener, 
+				FINACNE_CUSTOMER_ADD_CONTRACT, 
+				FINACNE_CUSTOMER_PAY_RECEIPT
+				/*FINACNE_CUSTOMER_CANCEL_CONTRACT*/);
 
 	}
 
@@ -305,11 +314,12 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 	//menus
 	private static final String FINACNE_SUPPLIER_PURCHASE_INVOICE = "Purchase Invoice";
 	private static final String FINACNE_SUPPLIER_INVOICE_PAYMENT = "Supplier Payment";
-	private static final String FINACNE_SUPPLIER_RECEIVE_STUFFS = "Receive products";
+	private static final String FINACNE_SUPPLIER_RECEIVE_STUFFS = "Receive Products";
 	
 
 	private static final String FINACNE_CUSTOMER_PAY_RECEIPT= "Pay Receipt";
 	private static final String FINACNE_CUSTOMER_ADD_CONTRACT= "Add Contract";
+	private static final String FINACNE_CUSTOMER_CANCEL_CONTRACT= "Cancel Contract";
 	
 	private final static String PROJECT_ADD_BLOCK = "Add Block";
 	private final static String PROJECT_ADD_FLAT = "Add Flat";
