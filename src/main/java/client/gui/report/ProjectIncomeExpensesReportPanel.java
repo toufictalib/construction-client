@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.table.TableColumnModel;
 
+import report.bean.ExpensesIconeReportBean;
 import test.DataUtils;
 import client.App;
 import client.rmiclient.classes.crud.BeanTableModel;
@@ -28,6 +29,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import desktopadmin.action.bean.ReportTableModel;
 import desktopadmin.action.bean.ReportTableModel.ExtraRowIndex;
 import desktopadmin.model.accounting.EnumType.ExtraRowType;
+import desktopadmin.utils.SearchBean;
 
 /**
  *
@@ -89,7 +91,9 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 			@Override
 			public ReportTableModel onBackground( ) throws Exception
 			{
-				return App.getCrudService().getProjectExpensesIncome(DataUtils.getSelectedProjectId());
+				SearchBean searchBean = new SearchBean();
+				ExpensesIconeReportBean expensesIconeReportBean = new ExpensesIconeReportBean(DataUtils.getSelectedProjectId());
+				return App.getCrudService().getProjectExpensesIncome(searchBean);
 			}
 
 			@Override

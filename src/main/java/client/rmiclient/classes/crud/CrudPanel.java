@@ -91,6 +91,7 @@ public class CrudPanel extends JpanelTemplate implements ActionListener, Accepta
     public void initComponents() {
 
         this.filterTableFrame = new FilterTableFrame();
+        filterTableFrame.lazyInitalize();
 
         btnAdd = ButtonFactory.createBtnAdd();
         btnAdd.addActionListener(this);

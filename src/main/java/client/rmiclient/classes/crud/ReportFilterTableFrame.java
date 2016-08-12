@@ -7,9 +7,16 @@ package client.rmiclient.classes.crud;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 
-import client.gui.report.TableFooter;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import client.gui.button.ButtonFactory;
+import client.gui.table.utils.SearchPanel;
+import desktopadmin.utils.SearchBean;
 
 /**
  *
@@ -22,12 +29,51 @@ public class ReportFilterTableFrame extends FilterTableFrame implements Acceptab
 	 * 
 	 */
 	private static final long serialVersionUID = 4382501662729174873L;
-	private TableFooter tableFooter;
+
+	
+	
+	
+	private JButton btnSearch;
+	
+	private ControllerListener controllerListener;
+	
+	private JPanel controlPanel;
+	
+	private SearchPanel searchPanel;
+	
+	private JPanel leftControlPanel;
+	
+	
+	/**
+	 * use this to add custom control panel to left and default search panel to right
+	 * @param controlPanel
+	 * @param controllerListener
+	 */
+	public void addControlPanel(JPanel leftControlPanel,ControllerListener controllerListener)
+	{
+		
+		
+		addCustomControlPanel(leftControlPanel, controllerListener, SearchPanel.createDefault());
+	}
+	
+	public void addCustomControlPanel(JPanel leftControlPanel,ControllerListener controllerListener,SearchPanel searchPanel)
+	{
+		this.leftControlPanel = leftControlPanel;
+		this.controllerListener = controllerListener;
+		this.searchPanel = searchPanel;
+	}
+	
+	
 
 	public ReportFilterTableFrame( ) throws HeadlessException
 	{
 
 		lazyInitalize();
+	}
+	
+	public ReportFilterTableFrame(boolean init) throws HeadlessException
+	{
+		
 	}
 
 	@Override
@@ -36,15 +82,56 @@ public class ReportFilterTableFrame extends FilterTableFrame implements Acceptab
 		super.lazyInitalize();
 	}
 
+	
 	public void setTableDimension(Dimension tableDimension)
 	{
 		reBuildPanel();
 	}
 
 	@Override
+	public void initComponents( )
+	{
+		super.initComponents();
+		btnSearch = ButtonFactory.createBtnSearch();
+		btnSearch.addActionListener(e->{
+			
+			
+			controllerListener.search(searchPanel.toSearchBean());
+		});
+	}
+	
+	
+	
+	@Override
 	public void init( )
 	{
-		super.init();
+		
+		
+		setAllowUpdate(false);
+		
+		 JScrollPane jScrollPane = new JScrollPane(table);
+	        if (tableDimension != null) {
+	            jScrollPane.setPreferredSize(tableDimension);
+	        }
+	        
+	        JPanel panel = new JPanel(new BorderLayout());
+	        
+	        JPanel myPanel = new JPanel();
+			myPanel.add(searchPanel);
+			myPanel.add(btnSearch);
+			
+			
+	        this.controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	        
+	        controlPanel.add(leftControlPanel);
+	        controlPanel.add(myPanel);
+			//controlPanel.add(myPanel,BorderLayout.PAGE_END);
+			
+			panel.add(controlPanel,BorderLayout.PAGE_START);
+	        panel.add(getControllerPanel(),BorderLayout.CENTER);
+	        
+	        add(panel, BorderLayout.PAGE_START);
+	        add(jScrollPane, BorderLayout.CENTER);
 		//tableFooter = new TableFooter(table);
 		//add(tableFooter.getPanel(), BorderLayout.CENTER);
 
@@ -60,5 +147,9 @@ public class ReportFilterTableFrame extends FilterTableFrame implements Acceptab
 
 	}
 
+	public interface ControllerListener
+	{
+		public void search(SearchBean searchBean);
+	}
 
 }

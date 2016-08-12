@@ -21,6 +21,8 @@ import javax.swing.JComponent;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.jdesktop.swingx.JXDatePicker;
+
 /**
  *
  * @author User
@@ -42,7 +44,7 @@ public class ComponentUtils {
     
     public static void fireCombobBoxItemListener(JComboBox comboBox) {
         for (ItemListener listener : comboBox.getItemListeners()) {
-            listener.itemStateChanged(new ItemEvent(null, -1, null, ItemEvent.SELECTED));
+            listener.itemStateChanged(new ItemEvent(comboBox, -1, null, ItemEvent.SELECTED));
         }
     }
     
@@ -58,5 +60,11 @@ public class ComponentUtils {
     public static void addTitleBorder(JComponent component,String title)
     {
     	component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), title));;
+    }
+    
+    public static JXDatePicker createDatePicker() {
+        JXDatePicker datePicker = new JXDatePicker();
+        datePicker.setFormats("yyyy-MM-dd");
+        return datePicker;
     }
 }

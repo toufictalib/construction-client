@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.table.TableColumnModel;
 
+import report.bean.CustomerReportBean;
 import test.DataUtils;
 import client.App;
 import client.gui.button.ButtonFactory;
@@ -29,6 +30,7 @@ import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
 import client.rmiclient.classes.crud.tableReflection.Column;
+import client.utils.ComponentUtils;
 import client.utils.DefaultFormBuilderUtils;
 import client.utils.ExCombo;
 import client.utils.MessageUtils;
@@ -46,6 +48,7 @@ import desktopadmin.action.bean.ReportTableModel;
 import desktopadmin.action.bean.ReportTableModel.ExtraRowIndex;
 import desktopadmin.model.accounting.EnumType.ExtraRowType;
 import desktopadmin.model.sold.Contract;
+import desktopadmin.utils.SearchBean;
 
 /**
  *
@@ -164,6 +167,8 @@ public class ContractReportPanel extends JpanelTemplate
 			{
 				comboCustomer.setValues(response.getCustomers());
 				contractEntryByCustomer = response.getContracts().stream().collect(Collectors.groupingBy(e->e.getCustomerId()));
+				
+				ComponentUtils.fireCombobBoxItemListener(comboCustomer);
 			}
 		}, this);
 		
@@ -250,7 +255,9 @@ public class ContractReportPanel extends JpanelTemplate
 			@Override
 			public ReportTableModel onBackground( ) throws Exception
 			{
-				return App.getCrudService().getCustomerTransaction(comboCustomer.getValue().getId(), comboContract.getValue().getId());
+				SearchBean searchBean = new SearchBean();
+				CustomerReportBean bean = new CustomerReportBean(comboCustomer.getValue().getId(), comboContract.getValue().getId());
+				return App.getCrudService().getCustomerTransaction(searchBean);
 			}
 
 			@Override

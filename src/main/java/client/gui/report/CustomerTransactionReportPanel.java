@@ -5,30 +5,26 @@
  */
 package client.gui.report;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.table.TableColumnModel;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import report.bean.CustomerReportBean;
 import test.DataUtils;
 import client.App;
-import client.gui.button.ButtonFactory;
-import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
-import client.rmiclient.classes.crud.tableReflection.Column;
+import client.rmiclient.classes.crud.ReportFilterTableFrame.ControllerListener;
 import client.utils.ExCombo;
-import client.utils.MessageFactory;
-import client.utils.MessageResolver;
 import client.utils.MessageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
+import client.utils.table.NumberRenderer;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -37,6 +33,9 @@ import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.ContractEntry;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.action.bean.ReportTableModel;
+import desktopadmin.action.bean.ReportTableModel.ExtraRowIndex;
+import desktopadmin.model.accounting.EnumType.ExtraRowType;
+import desktopadmin.utils.SearchBean;
 
 /**
  *
@@ -46,15 +45,18 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3945480819383996016L;
+
+
 	private ReportFilterTableFrame filterTableFrame;
 
-	private List data;
 
 	private ExCombo<Entry> comboCustomer;
 
 	private ExCombo<ContractEntry> comboContract;
-	
-	private JButton btnSearch;
 	
 	private Map<Object, List<ContractEntry>> contractEntryByCustomer;
 
@@ -75,7 +77,7 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
-		builder.append(getController());
+	//	builder.append(getController());
 		builder.append(filterTableFrame);
 
 	}
@@ -83,26 +85,40 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 	@Override
 	public void initComponents( )
 	{
-		filterTableFrame = new ReportFilterTableFrame();
+		
 		
 		comboContract = new ExCombo<>();
 		comboCustomer = new ExCombo<>();
 		comboCustomer.addItemListener(e->{
+			if(comboCustomer.getValue()!=null)
+			{
 			if(contractEntryByCustomer.get(comboCustomer.getValue().getId())!=null){
 				comboContract.setValues(contractEntryByCustomer.get(comboCustomer.getValue().getId()));
+			}}
+		});
+		
+		
+		
+		filterTableFrame = new ReportFilterTableFrame(false);
+		filterTableFrame.addControlPanel(getController(),new ControllerListener()
+		{
+			
+			@Override
+			public void search(SearchBean searchBean)
+			{
+				if (validateSelection())
+				{
+					fillCrudTable(searchBean);
+				}
+				
 			}
 		});
 		
-		btnSearch = ButtonFactory.createBtnSearch();
-		btnSearch.addActionListener(e->{
-			
-			if (validateSelection())
-			{
-				fillCrudTable();
-			}
-		});
+		filterTableFrame.lazyInitalize();
 		
 		fillData();
+		
+		
 
 	}
 
@@ -144,8 +160,9 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 			@Override
 			public void onDone(ContractBean response)
 			{
-				comboCustomer.setValues(response.getCustomers());
+				comboCustomer.setValues(true,response.getCustomers());
 				contractEntryByCustomer = response.getContracts().stream().collect(Collectors.groupingBy(e->e.getCustomerId()));
+				
 			}
 		}, this);
 		
@@ -158,13 +175,12 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 		panel.add(comboCustomer);
 		panel.add(new JLabel("Contract"));
 		panel.add(comboContract);
-		panel.add(btnSearch);
 
 		return panel;
 
 	}
 
-	protected void fillCrudTable( )
+	protected void fillCrudTable(final SearchBean searchBean )
 	{
 
 		ProgressBar.execute(new ProgressBarListener<ReportTableModel>()
@@ -173,7 +189,9 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 			@Override
 			public ReportTableModel onBackground( ) throws Exception
 			{
-				return App.getCrudService().getCustomerTransaction(comboCustomer.getValue().getId(), comboContract.getValue().getId());
+				CustomerReportBean customerReportBean = new CustomerReportBean(comboCustomer.getValue().getId(), comboContract.getValue().getId());
+				searchBean.setHolder(customerReportBean);
+				return App.getCrudService().getCustomerTransaction(searchBean);
 			}
 
 			@Override
@@ -185,31 +203,23 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 		}, this);
 	}
 
-	public void setData(List data)
-	{
-		this.data = data;
-	}
 
 	public void setData(ReportTableModel reportTableModel)
 	{
-		filterTableFrame.fillValues(fromReportTableModel(reportTableModel));
+		int purchase = 2;
+		int payment = 3;
+		
+		reportTableModel.addExtrass(Arrays.asList(
+				new ExtraRowIndex(purchase,ExtraRowType.SUM),
+				new ExtraRowIndex(payment,ExtraRowType.SUM)));
+		
+		filterTableFrame.fillValues(ProjectIncomeExpensesReportPanel.fromReportTableModel(reportTableModel));
+		
+		TableColumnModel m = filterTableFrame.getTable().getColumnModel();
+		m.getColumn(purchase).setCellRenderer(NumberRenderer.getCurrencyRenderer());
+		m.getColumn(payment).setCellRenderer(NumberRenderer.getCurrencyRenderer());
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static BeanTableModel fromReportTableModel(ReportTableModel reportTableModel)
-	{
-		int counter = 0;
-
-		List<Column> columns = new ArrayList<>();
-		for (String col : reportTableModel.cols)
-		{
-			Column column = new Column(col);
-			column.setType(reportTableModel.clazzes.get(counter++ ));
-			columns.add(column);
-		}
-
-		return new BeanTableModel<>(columns, reportTableModel.rows);
-	}
 
 	
 

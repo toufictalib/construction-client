@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.JXDatePicker;
 
 import test.DataUtils;
@@ -34,13 +35,11 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.model.accounting.CustomerTransaction;
-import desktopadmin.model.accounting.SupplierTransaction;
 import desktopadmin.model.accounting.EnumType.Payer;
 import desktopadmin.model.accounting.EnumType.RealEstateType;
 import desktopadmin.model.accounting.EnumType.TransactionType;
 import desktopadmin.model.accounting.Transaction;
 import desktopadmin.model.building.Block;
-import desktopadmin.model.building.Project;
 import desktopadmin.model.building.RealEstate;
 import desktopadmin.model.person.Customer;
 import desktopadmin.model.sold.Contract;
@@ -151,7 +150,7 @@ public class ContractPanel extends JpanelTemplate
 	private void checkValidation() throws Exception
 	{
 		StringBuilder builder = new StringBuilder();
-		if(txtDescription==null)
+		if(StringUtils.isEmpty(txtDescription.getText()))
 		{
 			builder.append("Add Description\n");
 		}
@@ -165,7 +164,20 @@ public class ContractPanel extends JpanelTemplate
 	 */
 	private ActionListener createBtnSaveActionListener( )
 	{
+		
 		return e -> {
+			
+
+			try
+			{
+				checkValidation();
+			}
+			catch (Exception ex)
+			{
+				MessageUtils.showErrorMessage(ContractPanel.this, ex.getMessage());
+				return;
+			}
+			
 			ProgressBar.execute(new ProgressBarListener<Void>()
 			{
 
@@ -173,7 +185,6 @@ public class ContractPanel extends JpanelTemplate
 				public Void onBackground( ) throws Exception
 				{
 
-					checkValidation();
 					Contract contract = new Contract();
 
 					Customer customer = new Customer();
@@ -191,18 +202,18 @@ public class ContractPanel extends JpanelTemplate
 					CustomerTransaction BuyinhPaymenttransaction = new CustomerTransaction();
 					BuyinhPaymenttransaction.setValue(Long.valueOf(txtDprice.getText()));
 					BuyinhPaymenttransaction.setReferenceId(comboCustomers.getValue().getId());
-					BuyinhPaymenttransaction.setDescritpion("Buying new Flat");
 					BuyinhPaymenttransaction.setValue(txtDprice.getValue());
 					BuyinhPaymenttransaction.setTransactionType(TransactionType.PURCHASE_REAL_ESTATE);
 					BuyinhPaymenttransaction.setProject(DataUtils.getSelectedProject());
 					BuyinhPaymenttransaction.setContract(contract);
+					BuyinhPaymenttransaction.setDescritpion("Buy new Real Estate : "+contract.getDescription()+" for "+BuyinhPaymenttransaction.getValue());
 					BuyinhPaymenttransaction.setCreationDate(new Date());
 
 					// Down payment transaction
 					CustomerTransaction downPaymenttransaction = (CustomerTransaction) paymentPanel.getTransaction(new CustomerTransaction());
 					downPaymenttransaction.setReferenceId(comboCustomers.getValue().getId());
 					downPaymenttransaction.setTransactionType(TransactionType.PAYMENT_DOWN);
-					downPaymenttransaction.setDescritpion("Down Payment for Customer " + comboCustomers.getValue().getName() + "\n" + "because of buying a " + comboRealEstateType.getValue());
+					downPaymenttransaction.setDescritpion("Down Payment (Customer " + comboCustomers.getValue().getName() +" for buying "+comboRealEstateType.getValue());
 					downPaymenttransaction.setTransactionType(TransactionType.PAYMENT_DOWN);
 					downPaymenttransaction.setProject(DataUtils.getSelectedProject());
 					downPaymenttransaction.setPayer(Payer.CUSTOMER);

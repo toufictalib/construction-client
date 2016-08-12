@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 
+import report.bean.CustomerReportBean;
 import client.App;
 import client.gui.button.ButtonFactory;
 import client.rmiclient.classes.crud.JpanelTemplate;
@@ -21,6 +22,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
 import desktopadmin.model.building.Project;
+import desktopadmin.utils.SearchBean;
 
 public class ProjectChooserPanel extends JpanelTemplate implements ActionListener
 {
@@ -99,15 +101,7 @@ public class ProjectChooserPanel extends JpanelTemplate implements ActionListene
 		if(e.getSource()==btnApply)
 		{
 			projectButtonsActionListener.btnApplyAction(listProjects.getValue());
-			try
-			{
-				App.getCrudService().getCustomerTransaction(1l, 1l);
-			}
-			catch (RemoteException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
 		}
 
 	}

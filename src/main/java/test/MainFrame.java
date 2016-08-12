@@ -31,7 +31,6 @@ import client.App;
 import client.gui.image.ImageUtils;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
-import desktopadmin.model.accounting.TransactionCause;
 import desktopadmin.model.accounting.payment.Check;
 import desktopadmin.model.stock.Product;
 
@@ -190,7 +189,7 @@ public class MainFrame extends JRibbonFrame
 			}
 		}, this);
 
-		ProgressBar.execute(new ProgressBarListener<List<TransactionCause>>()
+		/*ProgressBar.execute(new ProgressBarListener<List<TransactionCause>>()
 		{
 
 			@Override
@@ -205,7 +204,7 @@ public class MainFrame extends JRibbonFrame
 				DataUtils.setTransactionCauses(response);
 
 			}
-		}, this);
+		}, this);*/
 		
 		ProgressBar.execute(new ProgressBarListener<List<Product>>()
 				{

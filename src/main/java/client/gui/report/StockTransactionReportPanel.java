@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.table.TableColumnModel;
 
+import report.bean.StockReportBean;
 import test.DataUtils;
 import client.App;
-import client.gui.button.ButtonFactory;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
+import client.rmiclient.classes.crud.ReportFilterTableFrame.ControllerListener;
 import client.utils.ExCombo;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
@@ -33,6 +33,7 @@ import desktopadmin.action.bean.ReportTableModel;
 import desktopadmin.action.bean.ReportTableModel.ExtraRowIndex;
 import desktopadmin.model.accounting.EnumType.ExtraRowType;
 import desktopadmin.model.stock.Product;
+import desktopadmin.utils.SearchBean;
 
 /**
  *
@@ -43,13 +44,11 @@ public class StockTransactionReportPanel extends JpanelTemplate
 
 	private ReportFilterTableFrame filterTableFrame;
 
-	private List data;
 
 	private ExCombo<Entry> comboSupplier;
 
 	private ExCombo<Product> comboProduct;
 
-	private JButton btnSearch;
 
 	public StockTransactionReportPanel(String title)
 	{
@@ -76,18 +75,26 @@ public class StockTransactionReportPanel extends JpanelTemplate
 	@Override
 	public void initComponents( )
 	{
-		filterTableFrame = new ReportFilterTableFrame();
+		
 
 		comboSupplier = new ExCombo<>();
 
 		comboProduct = new ExCombo<>("All", DataUtils.getProducts());
 
-		btnSearch = ButtonFactory.createBtnSearch();
-		btnSearch.addActionListener(e -> {
 
-			fillCrudTable();
+		filterTableFrame = new ReportFilterTableFrame();
+		filterTableFrame.addControlPanel(getController(), new ControllerListener()
+		{
+			
+			@Override
+			public void search(SearchBean searchBean)
+			{
+				fillCrudTable();
+				
+			}
 		});
-
+		filterTableFrame.init();
+		
 		fillData();
 
 	}
@@ -123,7 +130,6 @@ public class StockTransactionReportPanel extends JpanelTemplate
 		panel.add(comboSupplier);
 		panel.add(new JLabel("Product"));
 		panel.add(comboProduct);
-		panel.add(btnSearch);
 
 		return panel;
 
@@ -140,7 +146,10 @@ public class StockTransactionReportPanel extends JpanelTemplate
 			{
 				Long productId = comboProduct.getValue() == null ? -1L : comboProduct.getValue().getId();
 				Long supplierId = comboSupplier.getValue() == null ? -1L : comboSupplier.getValue().getId();
-				return App.getCrudService().getStock(productId, supplierId, DataUtils.getSelectedProjectId());
+				
+				StockReportBean stockReportBean = new StockReportBean(productId, supplierId, DataUtils.getSelectedProjectId());
+				
+				return App.getCrudService().getStock(new SearchBean());
 			}
 
 			@Override

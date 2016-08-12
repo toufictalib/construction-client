@@ -23,6 +23,7 @@ public class DataUtils
 	private static Project selectedProject;
 	
 	public final static int MAX_ROWS = 1000;
+	public final static int START_ROWS = 0;
 	
 	private static List<Product> products;
 	
@@ -43,7 +44,7 @@ public class DataUtils
 
 	
 
-	public static List<TransactionCause> getTransactionCauses( )
+	/*public static List<TransactionCause> getTransactionCauses( )
 	{
 		return transactionCauses;
 	}
@@ -51,7 +52,7 @@ public class DataUtils
 	public static void setTransactionCauses(List<TransactionCause> transactionCauses)
 	{
 		DataUtils.transactionCauses = transactionCauses;
-	}
+	}*/
 
 	public static Project getSelectedProject( )
 	{

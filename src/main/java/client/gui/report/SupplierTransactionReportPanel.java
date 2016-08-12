@@ -8,16 +8,16 @@ package client.gui.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import report.bean.SupplierReportBean;
 import test.DataUtils;
 import client.App;
-import client.gui.button.ButtonFactory;
 import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
+import client.rmiclient.classes.crud.ReportFilterTableFrame.ControllerListener;
 import client.rmiclient.classes.crud.tableReflection.Column;
 import client.utils.ExCombo;
 import client.utils.MessageUtils;
@@ -30,6 +30,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import desktopadmin.action.bean.ContractBean;
 import desktopadmin.action.bean.Entry;
 import desktopadmin.action.bean.ReportTableModel;
+import desktopadmin.utils.SearchBean;
 
 /**
  *
@@ -39,15 +40,16 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4477122575022068775L;
+
+
 	private ReportFilterTableFrame filterTableFrame;
 
-	private List data;
 
 	private ExCombo<Entry> comboCustomer;
-
-	
-	private JButton btnSearch;
-	
 
 	public SupplierTransactionReportPanel(String title)
 	{
@@ -74,18 +76,24 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 	@Override
 	public void initComponents( )
 	{
-		filterTableFrame = new ReportFilterTableFrame();
 		
 		comboCustomer = new ExCombo<>();
-		
-		btnSearch = ButtonFactory.createBtnSearch();
-		btnSearch.addActionListener(e->{
+		filterTableFrame = new ReportFilterTableFrame();
+		filterTableFrame.addControlPanel(getController(), new ControllerListener()
+		{
 			
-			if (validateSelection())
+			@Override
+			public void search(SearchBean searchBean)
 			{
-				fillCrudTable();
+				if (validateSelection())
+				{
+					fillCrudTable(searchBean);
+				}
+				
 			}
 		});
+		
+		filterTableFrame.lazyInitalize();
 		
 		fillData();
 
@@ -140,13 +148,12 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 		JPanel panel = new JPanel();
 		panel.add(new JLabel("Suppliers"));
 		panel.add(comboCustomer);
-		panel.add(btnSearch);
 
 		return panel;
 
 	}
 
-	protected void fillCrudTable( )
+	protected void fillCrudTable(SearchBean searchBean )
 	{
 
 		ProgressBar.execute(new ProgressBarListener<ReportTableModel>()
@@ -155,7 +162,9 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 			@Override
 			public ReportTableModel onBackground( ) throws Exception
 			{
-				return App.getCrudService().getSupplierTransaction(comboCustomer.getValue().getId(), DataUtils.getSelectedProjectId());
+				SupplierReportBean supplierReportBean = new SupplierReportBean(comboCustomer.getValue().getId(), DataUtils.getSelectedProjectId());
+				searchBean.setHolder(supplierReportBean);
+				return App.getCrudService().getSupplierTransaction(searchBean);
 			}
 
 			@Override
@@ -167,10 +176,6 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 		}, this);
 	}
 
-	public void setData(List data)
-	{
-		this.data = data;
-	}
 
 	public void setData(ReportTableModel reportTableModel)
 	{

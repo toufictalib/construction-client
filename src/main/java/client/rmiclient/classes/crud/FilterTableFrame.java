@@ -65,7 +65,7 @@ public class FilterTableFrame extends JpanelTemplate implements Acceptable {
 
     private boolean allowUpdate = true;
     
-    private Dimension tableDimension  = new Dimension(750,350);
+    protected Dimension tableDimension  = new Dimension(750,350);
 
     //Table Components
     private BeanTableModel beanTableModel;
@@ -78,7 +78,6 @@ public class FilterTableFrame extends JpanelTemplate implements Acceptable {
 
     public FilterTableFrame() throws HeadlessException {
 
-        lazyInitalize();
     }
     
     @Override
@@ -251,14 +250,14 @@ public class FilterTableFrame extends JpanelTemplate implements Acceptable {
     }
     //protected abstract void refresh();
 
-    private JPanel getControllerPanel() {
+    protected JPanel getControllerPanel() {
         FormLayout layout = new FormLayout("fill:p:grow,10dlu,p,10dlu,p,10dlu,p", "");
 
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
         builder.setDefaultDialogBorder();
 
         builder.append(filterText);
-        builder.append(cbSensitive);
+        //builder.append(cbSensitive);
         builder.append(txtRowCount);
         return builder.getPanel();
     }
