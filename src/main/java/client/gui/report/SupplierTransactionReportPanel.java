@@ -68,7 +68,7 @@ public class SupplierTransactionReportPanel extends JpanelTemplate
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
-		builder.append(getController());
+		///builder.append(getController());
 		builder.append(filterTableFrame);
 
 	}

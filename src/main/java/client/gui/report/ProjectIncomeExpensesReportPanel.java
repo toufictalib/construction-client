@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.table.TableColumnModel;
 
 import report.bean.ExpensesIconeReportBean;
@@ -18,6 +19,7 @@ import client.App;
 import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
+import client.rmiclient.classes.crud.ReportFilterTableFrame.ControllerListener;
 import client.rmiclient.classes.crud.tableReflection.Column;
 import client.utils.ProgressBar;
 import client.utils.ProgressBar.ProgressBarListener;
@@ -41,7 +43,6 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 	
 	private ReportFilterTableFrame filterTableFrame;
 
-	private List data;
 
 
 	private JLabel summary;
@@ -72,17 +73,30 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 	@Override
 	public void initComponents( )
 	{
-		filterTableFrame = new ReportFilterTableFrame();
 		
 		summary = new JLabel();
+		filterTableFrame = new ReportFilterTableFrame();
+		filterTableFrame.addControlPanel(new JPanel(), new ControllerListener()
+		{
+			
+			@Override
+			public void search(SearchBean searchBean)
+			{
+				fillCrudTable(searchBean);
+				
+			}
+		});
 		
-		fillCrudTable();
+		filterTableFrame.lazyInitalize();
+		
+		
+		
 	}
 
 
 
 
-	protected void fillCrudTable( )
+	protected void fillCrudTable(SearchBean searchBean )
 	{
 
 		ProgressBar.execute(new ProgressBarListener<ReportTableModel>()
@@ -93,6 +107,7 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 			{
 				SearchBean searchBean = new SearchBean();
 				ExpensesIconeReportBean expensesIconeReportBean = new ExpensesIconeReportBean(DataUtils.getSelectedProjectId());
+				searchBean.setHolder(expensesIconeReportBean);
 				return App.getCrudService().getProjectExpensesIncome(searchBean);
 			}
 
@@ -105,10 +120,6 @@ public class ProjectIncomeExpensesReportPanel extends JpanelTemplate
 		}, this);
 	}
 
-	public void setData(List data)
-	{
-		this.data = data;
-	}
 
 	public void setData(ReportTableModel reportTableModel)
 	{

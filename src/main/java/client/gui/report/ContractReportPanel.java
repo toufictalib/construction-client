@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,11 +23,11 @@ import javax.swing.table.TableColumnModel;
 import report.bean.CustomerReportBean;
 import test.DataUtils;
 import client.App;
-import client.gui.button.ButtonFactory;
 import client.gui.window.WindowUtils;
 import client.rmiclient.classes.crud.BeanTableModel;
 import client.rmiclient.classes.crud.JpanelTemplate;
 import client.rmiclient.classes.crud.ReportFilterTableFrame;
+import client.rmiclient.classes.crud.ReportFilterTableFrame.ControllerListener;
 import client.rmiclient.classes.crud.tableReflection.Column;
 import client.utils.ComponentUtils;
 import client.utils.DefaultFormBuilderUtils;
@@ -59,13 +58,16 @@ public class ContractReportPanel extends JpanelTemplate
 
 	
 
-	private List data;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7749218717936521006L;
 
 	private ExCombo<Entry> comboCustomer;
 
 	private ExCombo<ContractEntry> comboContract;
 	
-	private JButton btnSearch;
 	
 	private List<Contract> contracts;
 	
@@ -93,7 +95,6 @@ public class ContractReportPanel extends JpanelTemplate
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
-		builder.append(getController());
 		builder.append(bodyPanel);
 		builder.append(filterTableFrame);
 
@@ -102,7 +103,7 @@ public class ContractReportPanel extends JpanelTemplate
 	@Override
 	public void initComponents( )
 	{
-		filterTableFrame = new ReportFilterTableFrame();
+		
 		
 		bodyPanel= new JPanel(new BorderLayout());
 		
@@ -114,15 +115,23 @@ public class ContractReportPanel extends JpanelTemplate
 			}
 		});
 		
-		btnSearch = ButtonFactory.createBtnSearch();
-		btnSearch.addActionListener(e->{
-			
-			if (validateSelection())
+		
+		filterTableFrame = new ReportFilterTableFrame();
+		filterTableFrame.addControlPanel(getController(), new ControllerListener()
+		{
+
+			@Override
+			public void search(SearchBean searchBean)
 			{
-				fillCrudTable();
+				if (validateSelection())
+				{
+					fillCrudTable(searchBean);
+				}
+
 			}
 		});
 		
+		filterTableFrame.lazyInitalize();
 		fillData();
 
 	}
@@ -181,13 +190,12 @@ public class ContractReportPanel extends JpanelTemplate
 		panel.add(comboCustomer);
 		panel.add(new JLabel("Contract"));
 		panel.add(comboContract);
-		panel.add(btnSearch);
 
 		return panel;
 
 	}
 
-	protected void fillCrudTable( )
+	protected void fillCrudTable( SearchBean searchBean)
 	{
 
 		if(contracts!=null)
@@ -237,7 +245,7 @@ public class ContractReportPanel extends JpanelTemplate
 	
 	private double getValue(Object o)
 	{
-		if(o!=null || !o.toString().isEmpty() )
+		if(o!=null && !o.toString().isEmpty() )
 		{
 			String p = o.toString().replace("$", "");
 			if(p.isEmpty())
@@ -257,9 +265,11 @@ public class ContractReportPanel extends JpanelTemplate
 			{
 				SearchBean searchBean = new SearchBean();
 				CustomerReportBean bean = new CustomerReportBean(comboCustomer.getValue().getId(), comboContract.getValue().getId());
+				searchBean.setHolder(bean);
 				return App.getCrudService().getCustomerTransaction(searchBean);
 			}
 
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onDone(ReportTableModel response)
 			{
@@ -316,6 +326,7 @@ public class ContractReportPanel extends JpanelTemplate
 	
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private String getRow(List list)
 	{
 		StringBuilder builder = new StringBuilder();

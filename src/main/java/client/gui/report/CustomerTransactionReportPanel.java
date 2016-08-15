@@ -99,7 +99,7 @@ public class CustomerTransactionReportPanel extends JpanelTemplate
 		
 		
 		
-		filterTableFrame = new ReportFilterTableFrame(false);
+		filterTableFrame = new ReportFilterTableFrame();
 		filterTableFrame.addControlPanel(getController(),new ControllerListener()
 		{
 			

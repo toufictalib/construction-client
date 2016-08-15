@@ -68,13 +68,8 @@ public class ReportFilterTableFrame extends FilterTableFrame implements Acceptab
 	public ReportFilterTableFrame( ) throws HeadlessException
 	{
 
-		lazyInitalize();
 	}
 	
-	public ReportFilterTableFrame(boolean init) throws HeadlessException
-	{
-		
-	}
 
 	@Override
 	public void lazyInitalize( )

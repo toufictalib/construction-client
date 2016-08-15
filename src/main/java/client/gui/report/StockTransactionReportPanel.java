@@ -42,6 +42,12 @@ import desktopadmin.utils.SearchBean;
 public class StockTransactionReportPanel extends JpanelTemplate
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	private ReportFilterTableFrame filterTableFrame;
 
 
@@ -67,7 +73,6 @@ public class StockTransactionReportPanel extends JpanelTemplate
 		builder.setDefaultDialogBorder();
 
 		builder.appendSeparator("Customer Transactions");
-		builder.append(getController());
 		builder.append(filterTableFrame);
 
 	}
@@ -89,11 +94,11 @@ public class StockTransactionReportPanel extends JpanelTemplate
 			@Override
 			public void search(SearchBean searchBean)
 			{
-				fillCrudTable();
+				fillCrudTable(searchBean);
 				
 			}
 		});
-		filterTableFrame.init();
+		filterTableFrame.lazyInitalize();
 		
 		fillData();
 
@@ -135,7 +140,7 @@ public class StockTransactionReportPanel extends JpanelTemplate
 
 	}
 
-	protected void fillCrudTable( )
+	protected void fillCrudTable(SearchBean searchBean )
 	{
 
 		ProgressBar.execute(new ProgressBarListener<ReportTableModel>()
@@ -148,8 +153,8 @@ public class StockTransactionReportPanel extends JpanelTemplate
 				Long supplierId = comboSupplier.getValue() == null ? -1L : comboSupplier.getValue().getId();
 				
 				StockReportBean stockReportBean = new StockReportBean(productId, supplierId, DataUtils.getSelectedProjectId());
-				
-				return App.getCrudService().getStock(new SearchBean());
+				searchBean.setHolder(stockReportBean);
+				return App.getCrudService().getStock(searchBean);
 			}
 
 			@Override

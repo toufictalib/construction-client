@@ -103,7 +103,7 @@ public class SearchPanel extends JPanel
 	
 	public int getEndCount()
 	{
-		return datePickerFrom.getDate()==null ? DataUtils.MAX_ROWS : txtEndCount.getValue();
+		return txtEndCount.getValue()==null ? DataUtils.MAX_ROWS : txtEndCount.getValue();
 	}
 	
 	
