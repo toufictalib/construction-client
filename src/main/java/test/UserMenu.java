@@ -11,6 +11,7 @@ import client.gui.crudPanel.CheckCrudPanel;
 import client.gui.crudPanel.CompanyCrudPanel;
 import client.gui.crudPanel.CustomerCrudPanel;
 import client.gui.crudPanel.FlatCrudPanel;
+import client.gui.crudPanel.FunderCrudPanel;
 import client.gui.crudPanel.SupplierCrudPanel;
 import client.gui.mainPanels.CustomerTransactionPanel;
 import client.gui.mainPanels.ProjectElementsPanel;
@@ -25,10 +26,12 @@ public class UserMenu
 		JCommandButton button1 = new JCommandButton("Customer", MainFrame.getResizableIconFromResource("customer.png"));
 		JCommandButton button2 = new JCommandButton("Supplier", MainFrame.getResizableIconFromResource("supplier.png"));
 		JCommandButton button3 = new JCommandButton("Company", MainFrame.getResizableIconFromResource("company.png"));
+		JCommandButton button4 = new JCommandButton("Funders", MainFrame.getResizableIconFromResource("investor.png"));
 
 		band1.addCommandButton(button1, RibbonElementPriority.TOP);
 		band1.addCommandButton(button2, RibbonElementPriority.MEDIUM);
 		band1.addCommandButton(button3, RibbonElementPriority.MEDIUM);
+		band1.addCommandButton(button4, RibbonElementPriority.MEDIUM);
 
 		button1.addActionListener(e -> {
 			buildPanel(myPanel,new CustomerCrudPanel());
@@ -40,6 +43,10 @@ public class UserMenu
 
 		button3.addActionListener(e -> {
 			buildPanel(myPanel,new CompanyCrudPanel());
+		});
+		
+		button4.addActionListener(e -> {
+			buildPanel(myPanel,new FunderCrudPanel());
 		});
 
 	}

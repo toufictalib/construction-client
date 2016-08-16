@@ -1,6 +1,7 @@
 package client.gui.table.utils;
 
 import java.awt.FlowLayout;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JLabel;

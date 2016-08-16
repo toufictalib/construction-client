@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import test.DataUtils;
+import test.FundPaymentTransactionPanel;
+import test.GetFundTransactionPanel;
 import test.StockTransactionPanel;
 import test.SupplierPaymentTransactionPanel;
 import test.SupplierTransactionPanel;
@@ -21,6 +23,7 @@ import client.gui.mainPanels.ProjectChooserPanel.ProjectButtonsActionListener;
 import client.gui.normalPanel.ContractPanel;
 import client.gui.report.ContractReportPanel;
 import client.gui.report.CustomerTransactionReportPanel;
+import client.gui.report.FunderTransactionReportPanel;
 import client.gui.report.ProjectIncomeExpensesReportPanel;
 import client.gui.report.StockTransactionReportPanel;
 import client.gui.report.SupplierTransactionReportPanel;
@@ -225,6 +228,31 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 		return createMenu("Stocks", actionListener, STOCK_SHOW_STOCK);
 
 	}
+	
+	private JPanel getAllSection( )
+	{
+
+		ActionListener actionListener = e -> {
+			if (e.getActionCommand().equals(FIND_FUND))
+			{
+
+				openReport(new GetFundTransactionPanel(), "Get Fund");
+			}
+			else
+				if(e.getActionCommand().equals(RETURN_FUND))
+				{
+					openReport(new FundPaymentTransactionPanel(), "Fund Payment");
+				}
+				else
+					if(e.getActionCommand().equals(FUND_REPORT))
+					{
+						openReport(new FunderTransactionReportPanel(), "Fund Report");
+					}
+		};
+
+		return createMenu("All Transactions", actionListener, FIND_FUND,RETURN_FUND,FUND_REPORT);
+
+	}
 
 	/**
 	 * 
@@ -245,9 +273,24 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 			lblSelectedProject.setText("<html>" + "<b>" + project.getName() + "</b>" + "</html>");
 
 			DataUtils.setSelectedProject(project);
+			
+			DefaultFormBuilder builder = null;
+			if(project.getId()==1)
+			{
+				FormLayout formLayout = new FormLayout("fill:p:grow,10dlu,fill:p:grow", "p,p,p");
+				builder = new DefaultFormBuilder(formLayout);
+				
+				CellConstraints cc = new CellConstraints();
+
+				builder.add(getAllSection(), cc.xy(1, 1, "left, top"));
+			
+			}
+			else
+			{
+			
 
 			FormLayout formLayout = new FormLayout("fill:p:grow,10dlu,fill:p:grow", "p,p,p");
-			DefaultFormBuilder builder = new DefaultFormBuilder(formLayout);
+			builder = new DefaultFormBuilder(formLayout);
 
 			// builder.append(lblSelectedProject);
 			CellConstraints cc = new CellConstraints();
@@ -264,6 +307,7 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 			 * builder.append(getReportDetails());
 			 * builder.append(getStockSection());
 			 */
+			}
 
 			rightPanel.add(builder.getPanel());
 			rightPanel.revalidate();
@@ -332,4 +376,8 @@ public class ProjectElementsPanel extends JpanelTemplate implements ProjectButto
 	public final static String REPORT_Show_Income_Expenses = "Show Income & Expenses";
 
 	public final static String STOCK_SHOW_STOCK = "Show Stocks";
+	
+	public final static String FIND_FUND = "Find Fund";
+	public final static String RETURN_FUND = "Return Fund";
+	public final static String FUND_REPORT = "Fund Report";
 }

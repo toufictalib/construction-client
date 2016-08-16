@@ -47,9 +47,9 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 
 	//protected ExCombo<TransactionCause> comboTransactionCause;
 
-	private List<Entry> suppliers;
+	protected List<Entry> suppliers;
 
-	private List<Entry> companies;
+	protected List<Entry> companies;
 
 	protected JTextArea txtAreaNote;
 	
@@ -147,7 +147,7 @@ public class TransactionPanel extends JpanelTemplate implements ActionListener
 		fillValues();
 	}
 
-	private void fillValues( )
+	protected void fillValues( )
 	{
 		ProgressBar.execute(new ProgressBarListener<ContractBean>()
 		{
