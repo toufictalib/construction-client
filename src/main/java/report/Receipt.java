@@ -9,10 +9,12 @@ import net.sf.jasperreports.view.JasperViewer;
 import report.GroupsReportTest.Holder;
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
+import ar.com.fdvs.dj.core.layout.HorizontalBandAlignment;
 import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.ImageBanner;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
+import ar.com.fdvs.dj.domain.builders.GroupBuilder;
 
 public class Receipt
 {
@@ -20,8 +22,12 @@ public class Receipt
 		FastReportBuilder builder = new FastReportBuilder();
 		
 		builder.addImageBanner("images/logo_ipin.jpg", 100, 100, ImageBanner.ALIGN_LEFT);
-		builder.addAutoText("Company Name :", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT);
-		builder.addAutoText(customer.companyName, AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT);
+AutoText autoText = new AutoText("toufic", AutoText.ALIGMENT_LEFT, HorizontalBandAlignment.LEFT);
+AutoText autoText1 = new AutoText("talib", AutoText.ALIGMENT_LEFT, HorizontalBandAlignment.LEFT);
+
+		builder.addAutoText(autoText);
+		builder.addAutoText(autoText1);
+		builder.addAutoText(customer.companyName, AutoText.POSITION_HEADER, AutoText.ALIGMENT_RIGHT);
 		builder.addAutoText("Company Phone :", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT);
 		builder.addAutoText(customer.companyPhone, AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT);
 		builder.addAutoText("Project Name :", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT);

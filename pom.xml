@@ -76,6 +76,32 @@
 		</dependency>
 
 
+<!--  Dynamic Report -->
+
+<dependency>
+    <groupId>net.sourceforge.dynamicreports</groupId>
+    <artifactId>dynamicreports-parent</artifactId>
+    <version>4.1.1</version>
+    <type>pom</type>
+</dependency>
+<dependency>
+    <groupId>net.sourceforge.dynamicreports</groupId>
+    <artifactId>dynamicreports-adhoc</artifactId>
+    <version>4.1.1</version>
+</dependency>
+<dependency>
+    <groupId>net.sourceforge.dynamicreports</groupId>
+    <artifactId>dynamicreports-core</artifactId>
+    <version>4.1.1</version>
+</dependency>
+<dependency>
+    <groupId>net.sourceforge.dynamicreports</groupId>
+    <artifactId>dynamicreports-googlecharts</artifactId>
+    <version>4.1.1</version>
+</dependency>
+
+<!--  End Dynamic Report -->
+
 		<dependency>
  <groupId>ar.com.fdvs</groupId>
  <artifactId>DynamicJasper</artifactId>
