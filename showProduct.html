@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <style>
@@ -13,6 +14,9 @@ body
 direction:rtl;
 }
 .glyphicon { margin-right:5px; }
+
+
+
 .thumbnail
 {
     margin-bottom: 20px;
@@ -22,9 +26,21 @@ direction:rtl;
     border-radius: 0px;
 }
 
+.well
+{
+ background-color: #FAD55E;
+  color: #fff;
+}
+.jumbotron {
+      background-color: #FAD55E;
+      color: #fff;
+      padding: 35px 25px;
+      font-family: Montserrat, sans-serif;
+  }
+
 .item.list-group-item
 {
-    float: none;
+    float: right;
     width: 100%;
     background-color: #fff;
     margin-bottom: 10px;
@@ -72,7 +88,33 @@ direction:rtl;
 
 </style>
 </head>
-<div class="container">
+<div class="container ">
+
+<div class="row list-group jumbotron ">
+
+<div class="item col-sm-6 col-xs-12 col-lg-6">
+	
+    <h1>Bootstrap Tutorial</h1>
+    <p>Bootstrap is the most popular HTML, CSS, and JS framework for developing responsive, mobile-first projects on the web.</p>
+	</div>
+ <div class="item col-sm-6 col-xs-12 col-lg-6">
+	<a href="/" title="Return to the homepage" id="logo">
+	<img src="C:\Users\talebt\Desktop\logo.png" alt="Nike logo" />
+</a>
+</div>
+
+  </div>
+  
+    <div id="products" class="row list-group">
+        <div class="item  col-sm-12 col-xs-12 col-lg-12">
+            <div class="thumbnail">
+                <img class="group list-group-image" src="C:\Users\talebt\Desktop\Untitled.png" alt="" />
+                
+            </div>
+        </div>
+       </div>
+	
+	
     <div class="well well-sm">
         <h1>3asalHome.com</h1>
     </div>
@@ -154,5 +196,34 @@ direction:rtl;
                 </div>
             </div>
         </div>
+		
+		
+		
+	</div>
+	
+	<div id="products" class="row list-group">
+	<div class="well well-sm">
+        <h1>العروض الحالية</h1>
+    </div>
+	 
+		
+		
+	
+			<div class="item  col-sm-6 col-xs-12 col-lg-6">
+			<div id="contact" class="container-fluid bg-grey">
+  <h2 class="text-center">اتصل بنا</h2>
+  <div class="row">
+    <div class="col-sm-5">
+      <p>الاتصال بنا، ونحن سوف نعود اليكم في غضون 24 ساعة.</p>
+      <p><span class="glyphicon glyphicon-map-marker"></span>بيروت ,لبنان</p>
+      <p><span class="glyphicon glyphicon-phone"></span>76619869 (Whatsapp)</p>
+    
+    </div>
+    
+  </div>
+</div>
+			</div>
+		
+		
 	</div>
 </div>
