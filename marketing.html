@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    .container-fluid {
+      background-color: #f4511e;
+      color: #000;
+		font-family: Montserrat, sans-serif;
+  }
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+	  
+    }
+    
+	.product-name
+	{
+		font-size:24px;
+		color:#23a1d1;
+
+	}
+	
+	 .first-row img
+	 {
+	  display: block;
+  width: 50% !important;
+  height: auto !important;
+  
+	 
+	 }
+	 
+	 .first-row
+	 {
+	 	font-size:24px;
+		color:#23a1d1;
+	 }
+	 
+  .carousel-inner img {
+      width: 100%; /* Set width to 100% */
+      margin: auto;
+      min-height:200px;
+  }
+  .price
+  {
+  font-size:20px;
+  font-style:bold;
+  color:#000;
+  }
+  
+  .well
+  {
+  text-align: left;
+  }
+
+  /* Hide the carousel text when the screen is less than 600 pixels wide */
+  @media (max-width: 600px) {
+    .carousel-caption {
+      display: none;
+    }
+  }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Logo</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+       
+      </ul>
+      
+    </div>
+  </div>
+</nav>
+
+<div class="container text-center">
+  <h3>منتجاتنا</h3><br>
+  <div class="row">
+    <div class="col-sm-4 first-row">
+      <img src="C:\Users\talebt\Desktop\cart\archive\free-delivery.png" class="img-responsive" style="width:100%" alt="Image">
+      <p>توصيل مجاني</p>
+    </div>
+    <div class="col-sm-4 first-row">
+      <img src="C:\Users\talebt\Desktop\cart\archive\guarantee.png" class="img-responsive" style="width:100%" alt="Image">
+      <p>العسل مكفول 100% وامكانية الارجاع خلال 30 يوم إن لم يعجبك العسل</p>
+	  
+    </div>
+	<div class="col-sm-4 first-row">
+      <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+      <p>عسل سنديان بشهدو</p>
+	  <p  class="price">60,000 L.L</p>
+    </div>
+   
+  </div>
+  
+
+<div class="container text-center">
+  <h3>منتجاتنا</h3><br>
+  <div class="row">
+    <div class="col-sm-4 product-name">
+      <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+      <p>عسل سنديان</p>
+	  <p  class="price">55,000 L.L</p>
+    </div>
+    <div class="col-sm-4 product-name">
+      <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+      <p>عسل ليمون</p>
+	  <p  class="price">35,000 L.L</p>
+    </div>
+	<div class="col-sm-4 product-name">
+      <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+      <p>عسل سنديان بشهدو</p>
+	  <p  class="price">60,000 L.L</p>
+    </div>
+   
+  </div>
+</div><br>
+
+<footer class="container-fluid text-center">
+     <div class="col-sm-4">
+      <div class="well">
+       <p><i class="fa fa-whatsapp" style="font-size:32px;color:green"></i> Call Us or Whatsapp : 76 122355</p>
+      </div>
+      <div class="well">
+       <p><i class="fa fa-facebook-official" style="font-size:24px;color:BLUE"></i> like us on facebook : www.facebook.com/3asalhome	</p>
+      </div>
+    </div>
+</footer>
+
+</body>
+</html>
+
